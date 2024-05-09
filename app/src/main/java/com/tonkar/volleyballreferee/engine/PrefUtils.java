@@ -26,9 +26,13 @@ public class PrefUtils {
     private static final String PREF_WEB_PREMIUM_SUBSCRIPTION_BILLING_TOKEN = "pref_web_premium_subscription_token";
     private static final String PREF_SCORE_SHEETS_BILLING_TOKEN             = "pref_score_sheets_token";
 
+    // Sporty
+    private static final String SPORTY_USER = "sporty_user";
+
     public static final String PREF_ONBOARDING_MAIN = "pref_onboarding_main";
 
     public static void signIn(Context context, ApiUserToken userToken) {
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         sharedPreferences
                 .edit()
@@ -43,6 +47,14 @@ public class PrefUtils {
         sharedPreferences
                 .edit()
                 .putString(PREF_USER, JsonConverters.GSON.toJson(user))
+                .apply();
+    }
+
+    public static void storeSportyUser (Context context, String userCode) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        sharedPreferences
+                .edit()
+                .putString(SPORTY_USER, userCode)
                 .apply();
     }
 

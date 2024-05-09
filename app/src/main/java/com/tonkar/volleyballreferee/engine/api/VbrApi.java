@@ -13,6 +13,7 @@ import com.tonkar.volleyballreferee.engine.api.model.ApiGame;
 import com.tonkar.volleyballreferee.engine.api.model.ApiGameSummary;
 import com.tonkar.volleyballreferee.engine.api.model.ApiLeague;
 import com.tonkar.volleyballreferee.engine.api.model.ApiNewUser;
+import com.tonkar.volleyballreferee.engine.api.model.ApiPostValidateSportyCode;
 import com.tonkar.volleyballreferee.engine.api.model.ApiRules;
 import com.tonkar.volleyballreferee.engine.api.model.ApiSet;
 import com.tonkar.volleyballreferee.engine.api.model.ApiTeam;
@@ -27,21 +28,25 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
 public class VbrApi {
 
-    private static final String    BASE_URL             = BuildConfig.SERVER_ADDRESS + "/api/v3.2";
-    private static final String    AUTHORIZATION_HEADER = "Authorization";
-    private static final MediaType JSON_MEDIA_TYPE      = MediaType.parse("application/json; charset=utf-8");
+    private static final String SPORTY_ULR = "https://sporty2.net/public/";
+    private static final String BASE_URL = BuildConfig.SERVER_ADDRESS + "/api/v3.2";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
 
-    private static VbrApi                  sVbrApi;
-    private        OkHttpClient            mHttpClient;
-    private        TokenExpiredInterceptor mTokenExpiredInterceptor;
+    private static final MediaType JSON_MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8");
 
-    private VbrApi() {}
+    private static VbrApi sVbrApi;
+    private OkHttpClient mHttpClient;
+    private TokenExpiredInterceptor mTokenExpiredInterceptor;
+
+    private VbrApi() {
+    }
 
     public static VbrApi getInstance() {
         if (sVbrApi == null) {
@@ -104,7 +109,7 @@ public class VbrApi {
                 .build();
     }
 
-   private Request buildPost(String path, ApiUserToken userToken) {
+    private Request buildPost(String path, ApiUserToken userToken) {
         return new Request.Builder()
                 .url(String.format(Locale.US, "%s/%s", VbrApi.BASE_URL, path))
                 .addHeader(AUTHORIZATION_HEADER, bearerToken(userToken.getToken()))
@@ -158,6 +163,45 @@ public class VbrApi {
                 .build();
     }
 
+    // Sporty Request Builder
+    private Request buildSportyGet (String path) {
+        return new Request.Builder()
+                .url(String.format(Locale.US, "%s/%s", VbrApi.SPORTY_ULR, path))
+                .delete()
+                .build();
+    }
+
+    private Request buildSportyPostWithFormData (String path, RequestBody body) {
+        return new Request.Builder()
+                .url(String.format(Locale.US, "%s/%s", VbrApi.SPORTY_ULR, path))
+                .post(body)
+                .build();
+    }
+
+    private Request buildSportyPost (String path, String jsonBody) {
+        return new Request.Builder()
+                .url(String.format(Locale.US, "%s/%s", VbrApi.SPORTY_ULR, path))
+                .post(RequestBody.create(jsonBody, JSON_MEDIA_TYPE))
+                .build();
+    }
+
+    // Sporty API
+    public void validateSportyCode (ApiPostValidateSportyCode data, Context context, Callback callback) {
+        // Parsing to form data
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("token", data.getToken())
+                .build();
+        Request request = buildSportyPostWithFormData("?action=getinfoevent", requestBody);
+        getHttpClient(context).newCall(request).enqueue(callback);
+    }
+
+    public void getSportyFiltersAndGames(Context context, Callback callback) {
+        Request request = buildSportyGet("get-filters-and-games");
+        getHttpClient(context).newCall(request).enqueue(callback);
+    }
+
+    // Other
     private String bearerToken(String token) {
         return String.format("Bearer %s", token);
     }
@@ -340,4 +384,5 @@ public class VbrApi {
         Request request = buildPatch(String.format(Locale.US, "games/%s/indexed/%b", game.getId(), game.isIndexed()), PrefUtils.getUserToken(context));
         getHttpClient(context).newCall(request).enqueue(callback);
     }
+
 }

@@ -382,5 +382,10 @@
     <string name="app_intro_next_button">@string/next</string>
     <string name="app_intro_skip_button">@string/skip</string>
     <string name="app_intro_done_button">@string/start</string>
+    <string name="sporty_enter_code">Ingresa el código sporty</string>
+    <string name="sporty_validate_code">Validar</string>
+    <string name="sporty_enter_code_title_dialog">Valida tu código sporty</string>
+    <string name="sporty_wrong_token">Token incorrecto, introduce uno valido</string>
+    <string name="sporty_right_token">Token validado correctamente</string>
 
 </resources>

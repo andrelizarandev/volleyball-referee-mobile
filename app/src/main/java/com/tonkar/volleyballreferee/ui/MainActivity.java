@@ -5,11 +5,14 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +29,10 @@ import com.tonkar.volleyballreferee.engine.Tags;
 import com.tonkar.volleyballreferee.engine.api.JsonConverters;
 import com.tonkar.volleyballreferee.engine.api.VbrApi;
 import com.tonkar.volleyballreferee.engine.api.model.ApiCount;
+import com.tonkar.volleyballreferee.engine.api.model.ApiFiltersAndGames;
+import com.tonkar.volleyballreferee.engine.api.model.ApiPostValidateSportyCode;
 import com.tonkar.volleyballreferee.engine.api.model.ApiUserSummary;
+import com.tonkar.volleyballreferee.engine.api.model.ApiValidateSportyCode;
 import com.tonkar.volleyballreferee.engine.game.BeachGame;
 import com.tonkar.volleyballreferee.engine.game.GameFactory;
 import com.tonkar.volleyballreferee.engine.game.GameType;
@@ -61,6 +67,13 @@ import okhttp3.Response;
 public class MainActivity extends NavigationActivity {
 
     private StoredGamesService mStoredGamesService;
+
+    // Sporty components
+    private View customDialog;
+    private Button btnOpenValidateCodeDialog;
+    private AlertDialog validateSportyTokenDialog;
+    private EditText etSportyCode;
+    private Button btnSportyValidateCode;
 
     @Override
     protected String getToolbarTitle() {
@@ -116,6 +129,8 @@ public class MainActivity extends NavigationActivity {
         startService(intent);
 
         showReleaseNotes();
+
+        initSportyUi();
     }
 
     @Override
@@ -141,6 +156,19 @@ public class MainActivity extends NavigationActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void initSportyUi() {
+        getSportyComponents();
+        addSportyListeners();
+    }
+
+    public void getSportyComponents () {
+        btnOpenValidateCodeDialog = findViewById(R.id.main_btn_open_validate_code_dialog);
+    }
+
+    public void addSportyListeners () {
+        btnOpenValidateCodeDialog.setOnClickListener(v -> showCustomDialogToValidateSportyCode());
+    }
+
     public void resumeCurrentGame(View view) {
         Log.i(Tags.GAME_UI, "Resume game");
         resumeCurrentGame();
@@ -153,13 +181,18 @@ public class MainActivity extends NavigationActivity {
         UiUtils.animateForward(this);
     }
 
-    public void startIndoorGame(View view) {
+    public void startIndoorGame (View view) {
         Log.i(Tags.GAME_UI, "Start an indoor game");
         ApiUserSummary user = PrefUtils.getUser(this);
-        IndoorGame game = GameFactory.createIndoorGame(UUID.randomUUID().toString(), user.getId(), user.getPseudo(),
-                System.currentTimeMillis(), 0L, Rules.officialIndoorRules());
+        IndoorGame game = GameFactory.createIndoorGame(
+            UUID.randomUUID().toString(),
+            user.getId(),
+            user.getPseudo(),
+            System.currentTimeMillis(),
+            0L,
+            Rules.officialIndoorRules()
+        );
         mStoredGamesService.saveSetupGame(game);
-
         Log.i(Tags.GAME_UI, "Start activity to setup game");
         final Intent intent = new Intent(this, GameSetupActivity.class);
         startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this, view, "gameKindToToolbar").toBundle());
@@ -278,6 +311,79 @@ public class MainActivity extends NavigationActivity {
                 }
             });
         }
+    }
+
+    // Sporty, getting the filters and games from the sporty api
+    private void fetchFiltersAndGames () {
+        VbrApi.getInstance().getSportyFiltersAndGames(this, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                call.cancel();
+            }
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.code() == HttpURLConnection.HTTP_OK) {
+                    ApiFiltersAndGames resp = JsonConverters.GSON.fromJson(response.body().string(), ApiFiltersAndGames.class);
+                    System.out.println(resp.getFilters());
+                    System.out.println(resp.getGames());
+                }
+            }
+        });
+    }
+
+    // Sporty, validate token to get games
+    private void fetchValidateSportyCode () {
+        String token = etSportyCode.getText().toString();
+        ApiPostValidateSportyCode data = new ApiPostValidateSportyCode(token);
+        VbrApi.getInstance().validateSportyCode(data, this, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                call.cancel();
+            }
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.code() == HttpURLConnection.HTTP_OK) {
+                    ApiValidateSportyCode resp = JsonConverters.GSON.fromJson(response.body().string(), ApiValidateSportyCode.class);
+                    if (resp.getCanchas() == null) {
+                        MainActivity.this.runOnUiThread(() -> {
+                            UiUtils.makeErrorText(MainActivity.this, "Token validado correctamente", Toast.LENGTH_LONG).show();
+                            validateSportyTokenDialog.dismiss();
+                        });
+                    } else {
+                        MainActivity.this.runOnUiThread(() -> {
+                            UiUtils.makeText(MainActivity.this, "Token validado correctamente", Toast.LENGTH_LONG).show();
+                            validateSportyTokenDialog.dismiss();
+                        });
+                    }
+                }
+            }
+        });
+    }
+
+    // Sporty, showing a custom dialog to validate the sporty code
+    private void showCustomDialogToValidateSportyCode () {
+
+        // Configure the custom dialog
+        customDialog = LayoutInflater
+                .from(this)
+                .inflate(R.layout.dialog_validate_sporty_code, null);
+
+        AlertDialog.Builder builder = new AlertDialog
+                .Builder(this, R.style.AppTheme_Dialog);
+
+        builder.setView(customDialog);
+
+        validateSportyTokenDialog = builder.create();
+
+        // Components
+        etSportyCode = customDialog.findViewById(R.id.sporty_et_code);
+        btnSportyValidateCode = customDialog.findViewById(R.id.sporty_btn_code);
+
+        // Listeners
+        btnSportyValidateCode.setOnClickListener(v -> this.fetchValidateSportyCode());
+
+        validateSportyTokenDialog.show();
+
     }
 
     private void initFriendRequestsButton(ApiCount count) {

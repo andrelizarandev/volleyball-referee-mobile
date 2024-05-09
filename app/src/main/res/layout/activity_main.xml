@@ -44,6 +44,19 @@
 
                 <include layout="@layout/main_time_based_tile" />
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/default_margin_size">
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sporty_enter_code"
+                        android:id="@+id/main_btn_open_validate_code_dialog"/>
+
+                </LinearLayout>
+
             </LinearLayout>
 
         </ScrollView>
