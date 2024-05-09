@@ -74,6 +74,7 @@ public class MainActivity extends NavigationActivity {
     private AlertDialog validateSportyTokenDialog;
     private EditText etSportyCode;
     private Button btnSportyValidateCode;
+    private Button btnSignOutSporty;
 
     @Override
     protected String getToolbarTitle() {
@@ -87,6 +88,7 @@ public class MainActivity extends NavigationActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         showOnboarding();
 
         super.onCreate(savedInstanceState);
@@ -159,14 +161,27 @@ public class MainActivity extends NavigationActivity {
     public void initSportyUi() {
         getSportyComponents();
         addSportyListeners();
+        manageSportyComponents();
     }
 
     public void getSportyComponents () {
-        btnOpenValidateCodeDialog = findViewById(R.id.main_btn_open_validate_code_dialog);
+        btnOpenValidateCodeDialog = findViewById(R.id.main_btn_open_validate_sporty_code_dialog);
+        btnSignOutSporty = findViewById(R.id.main_btn_sporty_sign_out);
     }
 
     public void addSportyListeners () {
         btnOpenValidateCodeDialog.setOnClickListener(v -> showCustomDialogToValidateSportyCode());
+        btnSignOutSporty.setOnClickListener(v -> signOutFromSporty());
+    }
+
+    public void signOutFromSporty () {
+        btnSignOutSporty.setVisibility(View.GONE);
+        btnOpenValidateCodeDialog.setVisibility(View.VISIBLE);
+        UiUtils.makeText(this, "Sesión cerrada correctamente", Toast.LENGTH_LONG).show();
+    }
+
+    public void manageSportyComponents () {
+        btnSignOutSporty.setVisibility(View.GONE);
     }
 
     public void resumeCurrentGame(View view) {
@@ -346,13 +361,14 @@ public class MainActivity extends NavigationActivity {
                     ApiValidateSportyCode resp = JsonConverters.GSON.fromJson(response.body().string(), ApiValidateSportyCode.class);
                     if (resp.getCanchas() == null) {
                         MainActivity.this.runOnUiThread(() -> {
-                            UiUtils.makeErrorText(MainActivity.this, "Token validado correctamente", Toast.LENGTH_LONG).show();
-                            validateSportyTokenDialog.dismiss();
+                            UiUtils.makeErrorText(MainActivity.this, getString(R.string.sporty_wrong_token), Toast.LENGTH_LONG).show();
                         });
                     } else {
                         MainActivity.this.runOnUiThread(() -> {
-                            UiUtils.makeText(MainActivity.this, "Token validado correctamente", Toast.LENGTH_LONG).show();
                             validateSportyTokenDialog.dismiss();
+                            UiUtils.makeText(MainActivity.this, getString(R.string.sporty_right_token), Toast.LENGTH_LONG).show();
+                            btnSignOutSporty.setVisibility(View.VISIBLE);
+                            btnOpenValidateCodeDialog.setVisibility(View.GONE);
                         });
                     }
                 }

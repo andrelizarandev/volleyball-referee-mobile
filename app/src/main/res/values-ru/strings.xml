@@ -386,5 +386,6 @@
     <string name="sporty_enter_code_title_dialog">-</string>
     <string name="sporty_wrong_token">-</string>
     <string name="sporty_right_token">-</string>
+    <string name="sporty_sign_out">-</string>
 
 </resources>
