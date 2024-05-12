@@ -387,5 +387,9 @@
     <string name="sporty_wrong_token">-</string>
     <string name="sporty_right_token">-</string>
     <string name="sporty_sign_out">-</string>
+    <string name="sporty_spinner_court_label">-</string>
+    <string name="sporty_spinner_day_label">-</string>
+    <string name="sporty_spinner_state_label">-</string>
+    <string name="sporty_filter_games">-</string>
 
 </resources>

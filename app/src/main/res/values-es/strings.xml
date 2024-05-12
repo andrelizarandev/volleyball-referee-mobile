@@ -388,5 +388,9 @@
     <string name="sporty_wrong_token">Token incorrecto, introduce uno valido</string>
     <string name="sporty_right_token">Token validado correctamente</string>
     <string name="sporty_sign_out">Cerrar sesión</string>
+    <string name="sporty_spinner_court_label">Selecciona un cancha</string>
+    <string name="sporty_spinner_day_label">Selecciona un día</string>
+    <string name="sporty_spinner_state_label">Selecciona un estado</string>
+    <string name="sporty_filter_games">Filtrar juegos</string>
 
 </resources>

@@ -11,6 +11,8 @@ import com.tonkar.volleyballreferee.engine.api.model.ApiLeague;
 import com.tonkar.volleyballreferee.engine.api.model.ApiLeagueSummary;
 import com.tonkar.volleyballreferee.engine.api.model.ApiRules;
 import com.tonkar.volleyballreferee.engine.api.model.ApiRulesSummary;
+import com.tonkar.volleyballreferee.engine.api.model.ApiSportyDate;
+import com.tonkar.volleyballreferee.engine.api.model.ApiSportyValidateCode;
 import com.tonkar.volleyballreferee.engine.api.model.ApiTeam;
 import com.tonkar.volleyballreferee.engine.api.model.ApiTeamSummary;
 import com.tonkar.volleyballreferee.engine.database.model.FriendEntity;
@@ -18,6 +20,9 @@ import com.tonkar.volleyballreferee.engine.database.model.FullGameEntity;
 import com.tonkar.volleyballreferee.engine.database.model.GameEntity;
 import com.tonkar.volleyballreferee.engine.database.model.LeagueEntity;
 import com.tonkar.volleyballreferee.engine.database.model.RulesEntity;
+import com.tonkar.volleyballreferee.engine.database.model.SportyCourtEntity;
+import com.tonkar.volleyballreferee.engine.database.model.SportyDateEntity;
+import com.tonkar.volleyballreferee.engine.database.model.SportyStateEntity;
 import com.tonkar.volleyballreferee.engine.database.model.TeamEntity;
 import com.tonkar.volleyballreferee.engine.game.BaseGame;
 import com.tonkar.volleyballreferee.engine.game.GameType;
@@ -35,14 +40,17 @@ public class VbrRepository {
     private static final String sCurrentGame = "current";
     private static final String sSetupGame   = "setup";
 
-    private final FriendDao   mFriendDao;
-    private final FullGameDao mFullGameDao;
-    private final GameDao     mGameDao;
-    private final LeagueDao   mLeagueDao;
-    private final RulesDao    mRulesDao;
-    private final TeamDao     mTeamDao;
+    private final FriendDao      mFriendDao;
+    private final FullGameDao    mFullGameDao;
+    private final GameDao        mGameDao;
+    private final LeagueDao      mLeagueDao;
+    private final RulesDao       mRulesDao;
+    private final TeamDao        mTeamDao;
+    private final SportyCourtDao mSportyCourtDao;
+    private final SportyDateDao  mSportyDateDao;
+    private final SportyStateDao mSportyStateDao;
 
-    public VbrRepository(Context context) {
+    public VbrRepository (Context context) {
         VbrDatabase db = VbrDatabase.getInstance(context);
         mFriendDao = db.friendDao();
         mFullGameDao = db.fullGameDao();
@@ -50,6 +58,9 @@ public class VbrRepository {
         mLeagueDao = db.leagueDao();
         mRulesDao = db.rulesDao();
         mTeamDao = db.teamDao();
+        mSportyCourtDao = db.sportyCourtDao();
+        mSportyDateDao = db.sportyDateDao();
+        mSportyStateDao = db.sportyStateDao();
     }
 
     public void insertFriend(final String friendId, final String friendPseudo, boolean syncInsertion) {
@@ -67,11 +78,11 @@ public class VbrRepository {
         }
     }
 
-    public void removeFriend(final String friendId) {
+    public void removeFriend (final String friendId) {
         VbrDatabase.sDatabaseWriteExecutor.execute(() -> mFriendDao.deleteById(friendId));
     }
 
-    public void insertFriends(final List<ApiFriend> friends, boolean syncInsertion) {
+    public void insertFriends (final List<ApiFriend> friends, boolean syncInsertion) {
         Runnable runnable = () -> {
             mFriendDao.deleteAll();
             List<FriendEntity> friendEntities = new ArrayList<>();
@@ -207,7 +218,6 @@ public class VbrRepository {
         return mTeamDao.listTeamsByKind(kind);
     }
 
-
     public List<ApiTeamSummary> listTeams(GenderType genderType, GameType kind) {
         return mTeamDao.listTeamsByGenderAndKind(genderType, kind);
     }
@@ -216,7 +226,6 @@ public class VbrRepository {
         String json = mTeamDao.findContentById(id);
         return JsonConverters.GSON.fromJson(json, ApiTeam.class);
     }
-
 
     public ApiTeam getTeam(String name, GenderType genderType, GameType kind) {
         String json = mTeamDao.findContentByNameAndGenderAndKind(name, genderType, kind);
@@ -380,4 +389,59 @@ public class VbrRepository {
     public void deleteSetupGame() {
         deleteFullGame(sSetupGame);
     }
+
+    // Sporty courts
+    public List<ApiSportyValidateCode.CanchaData> listCourts () {
+        return mSportyCourtDao.courtList();
+    }
+
+    public void insertAllCourts (List<ApiSportyValidateCode.CanchaData> courtlist) {
+        List<SportyCourtEntity> parsedList = new ArrayList<>();
+        for (ApiSportyValidateCode.CanchaData canchaData : courtlist) {
+            SportyCourtEntity courtEntity = new SportyCourtEntity(canchaData.getCve(), canchaData.getNombre(), canchaData.getDeporte());
+            parsedList.add(courtEntity);
+        }
+        mSportyCourtDao.insertAll(parsedList);
+    }
+
+    public void deleteAllCourts () {
+        mSportyCourtDao.deleteAll();
+    }
+
+    // Sporty dates
+    public List<ApiSportyDate> listDates () {
+        return mSportyDateDao.dateList();
+    }
+
+    public void insertAllDates (List<ApiSportyDate> dateList) {
+        List<SportyDateEntity> parsedList = new ArrayList<>();
+        for (ApiSportyDate sportyDate : dateList) {
+            SportyDateEntity dateEntity = new SportyDateEntity(sportyDate.getId(), sportyDate.getDate());
+            parsedList.add(dateEntity);
+        }
+        mSportyDateDao.insertAll(parsedList);
+    }
+
+    public void deleteAllDates () {
+        mSportyDateDao.deleteAll();
+    }
+
+    // Sporty states
+    public List <ApiSportyValidateCode.EstadoData> listStates () {
+        return mSportyStateDao.stateList();
+    }
+
+    public void insertAllStates (List<ApiSportyValidateCode.EstadoData> stateList) {
+        List<SportyStateEntity> parsedList = new ArrayList<>();
+        for (ApiSportyValidateCode.EstadoData state : stateList) {
+            SportyStateEntity stateEntity = new SportyStateEntity(state.getCve(), state.getTitle());
+            parsedList.add(stateEntity);
+        }
+        mSportyStateDao.insertAll(parsedList);
+    }
+
+    public void deleteAllStates () {
+        mSportyStateDao.deleteAll();
+    }
+
 }

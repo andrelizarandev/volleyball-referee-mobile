@@ -10,42 +10,42 @@ import com.tonkar.volleyballreferee.engine.team.GenderType;
 public class DatabaseConverters {
 
     @TypeConverter
-    public static GameType toGameType(String gameTypeStr) {
+    public static GameType toGameType (String gameTypeStr) {
         return GameType.valueOf(gameTypeStr);
     }
 
     @TypeConverter
-    public static String fromGameType(GameType gameType) {
+    public static String fromGameType (GameType gameType) {
         return gameType.toString();
     }
 
     @TypeConverter
-    public static GameStatus toGameStatus(String gameStatusStr) {
+    public static GameStatus toGameStatus (String gameStatusStr) {
         return GameStatus.valueOf(gameStatusStr);
     }
 
     @TypeConverter
-    public static String fromGameStatus(GameStatus gameStatus) {
+    public static String fromGameStatus (GameStatus gameStatus) {
         return gameStatus.toString();
     }
 
     @TypeConverter
-    public static GenderType toGenderType(String genderTypeStr) {
+    public static GenderType toGenderType (String genderTypeStr) {
         return GenderType.valueOf(genderTypeStr);
     }
 
     @TypeConverter
-    public static String fromGenderType(GenderType genderType) {
+    public static String fromGenderType (GenderType genderType) {
         return genderType.toString();
     }
 
     @TypeConverter
-    public static UsageType toUsageType(String usageTypeStr) {
+    public static UsageType toUsageType (String usageTypeStr) {
         return UsageType.valueOf(usageTypeStr);
     }
 
     @TypeConverter
-    public static String fromUsageType(UsageType usageType) {
+    public static String fromUsageType (UsageType usageType) {
         return usageType.toString();
     }
 }

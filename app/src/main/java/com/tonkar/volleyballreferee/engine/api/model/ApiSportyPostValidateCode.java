@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ApiPostValidateSportyCode {
+public class ApiSportyPostValidateCode {
 
     private String token;
 

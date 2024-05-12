@@ -15,13 +15,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
 public class IntegerRuleAdapter extends ArrayAdapter<Integer> {
 
     private final LayoutInflater mLayoutInflater;
     private final List<String>   mDisplayedValues;
     private final List<Integer>  mActualValues;
 
-    IntegerRuleAdapter(Context context, LayoutInflater layoutInflater, String[] displayedValues, String[] actualValues) {
+    public IntegerRuleAdapter (
+            Context context,
+            LayoutInflater layoutInflater,
+            String[] displayedValues,
+            String[] actualValues
+    ) {
         super(context, R.layout.vbr_spinner);
         mLayoutInflater = layoutInflater;
         mDisplayedValues = Arrays.asList(displayedValues);

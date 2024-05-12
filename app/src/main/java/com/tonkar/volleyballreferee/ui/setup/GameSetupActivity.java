@@ -76,6 +76,7 @@ public class GameSetupActivity extends AppCompatActivity {
         toolbar.setTitle("");
         UiUtils.updateToolbarLogo(toolbar, mGame.getKind(), mGame.getUsage());
         setSupportActionBar(toolbar);
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);

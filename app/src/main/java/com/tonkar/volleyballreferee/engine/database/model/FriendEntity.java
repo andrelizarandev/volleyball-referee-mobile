@@ -10,4 +10,5 @@ public class FriendEntity extends ApiFriend {
     public FriendEntity() {
         super();
     }
+
 }

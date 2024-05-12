@@ -399,6 +399,9 @@
     <string name="sporty_wrong_token">Wrong token</string>
     <string name="sporty_right_token">Right token</string>
     <string name="sporty_sign_out">Sign out from Sporty</string>
+    <string name="sporty_spinner_court_label">Select a court</string>
+    <string name="sporty_spinner_day_label">Select a day</string>
+    <string name="sporty_spinner_state_label">Select a state</string>
 
     <string-array name="points_per_set_values" translatable="false">
         <item>40</item>
@@ -512,5 +515,7 @@
         <item>#ffffff</item>
         <item>#0d1017</item>
     </string-array>
+    <string name="sporty_filter_games">Filter games</string>
+
 
 </resources>

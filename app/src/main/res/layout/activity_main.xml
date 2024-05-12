@@ -47,20 +47,26 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/default_margin_size"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="@dimen/default_margin_size">
 
                     <Button
+                        android:id="@+id/main_btn_open_validate_sporty_code_dialog"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/sporty_enter_code"
-                        android:id="@+id/main_btn_open_validate_sporty_code_dialog"/>
+                        android:text="@string/sporty_enter_code" />
 
                     <Button
+                        android:id="@+id/main_btn_filter_games"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/sporty_sign_out"
-                        android:id="@+id/main_btn_sporty_sign_out"/>
+                        android:text="@string/sporty_filter_games" />
+
+                    <Button
+                        android:id="@+id/main_btn_sporty_sign_out"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sporty_sign_out" />
 
                 </LinearLayout>
 

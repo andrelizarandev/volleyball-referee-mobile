@@ -13,7 +13,7 @@ import com.tonkar.volleyballreferee.engine.api.model.ApiGame;
 import com.tonkar.volleyballreferee.engine.api.model.ApiGameSummary;
 import com.tonkar.volleyballreferee.engine.api.model.ApiLeague;
 import com.tonkar.volleyballreferee.engine.api.model.ApiNewUser;
-import com.tonkar.volleyballreferee.engine.api.model.ApiPostValidateSportyCode;
+import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostValidateCode;
 import com.tonkar.volleyballreferee.engine.api.model.ApiRules;
 import com.tonkar.volleyballreferee.engine.api.model.ApiSet;
 import com.tonkar.volleyballreferee.engine.api.model.ApiTeam;
@@ -186,7 +186,7 @@ public class VbrApi {
     }
 
     // Sporty API
-    public void validateSportyCode (ApiPostValidateSportyCode data, Context context, Callback callback) {
+    public void validateSportyCode (ApiSportyPostValidateCode data, Context context, Callback callback) {
         // Parsing to form data
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
