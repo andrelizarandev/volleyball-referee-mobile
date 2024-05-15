@@ -17,6 +17,7 @@ import com.tonkar.volleyballreferee.engine.database.model.LeagueEntity;
 import com.tonkar.volleyballreferee.engine.database.model.RulesEntity;
 import com.tonkar.volleyballreferee.engine.database.model.SportyCourtEntity;
 import com.tonkar.volleyballreferee.engine.database.model.SportyDateEntity;
+import com.tonkar.volleyballreferee.engine.database.model.SportyGameEntity;
 import com.tonkar.volleyballreferee.engine.database.model.SportyStateEntity;
 import com.tonkar.volleyballreferee.engine.database.model.TeamEntity;
 
@@ -33,8 +34,9 @@ import java.util.concurrent.Executors;
                 FriendEntity.class,
                 SportyCourtEntity.class,
                 SportyDateEntity.class,
-                SportyStateEntity.class
-        }, version = 5)
+                SportyStateEntity.class,
+                SportyGameEntity.class
+        }, version = 6)
 
 @TypeConverters({DatabaseConverters.class})
 
@@ -57,6 +59,7 @@ public abstract class VbrDatabase extends RoomDatabase {
                             .addMigrations(MIGRATION_3_4)
                             .addMigrations(MIGRATION_4_5)
                             .addMigrations(MIGRATION_5_6)
+                            .addMigrations(MIGRATION_6_7)
                             .allowMainThreadQueries()
                             .build();
                 }
@@ -68,6 +71,7 @@ public abstract class VbrDatabase extends RoomDatabase {
                     .addMigrations(MIGRATION_3_4)
                     .addMigrations(MIGRATION_4_5)
                     .addMigrations(MIGRATION_5_6)
+                    .addMigrations(MIGRATION_6_7)
                     .allowMainThreadQueries()
                     .build();
         }
@@ -91,6 +95,8 @@ public abstract class VbrDatabase extends RoomDatabase {
     public abstract SportyDateDao sportyDateDao();
 
     public abstract SportyStateDao sportyStateDao();
+
+    public abstract SportyGameDao sportyGameDao();
 
     private static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
@@ -140,6 +146,14 @@ public abstract class VbrDatabase extends RoomDatabase {
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             // Sporty
             database.execSQL("CREATE TABLE `sporty_token` (`token` TEXT NOT NULL, PRIMARY KEY(`token`))");
+        }
+    };
+
+    private static final Migration MIGRATION_6_7 = new Migration(3, 4) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            // Sporty
+            database.execSQL("CREATE TABLE `sporty_games` (`content` TEXT NOT NULL, `cve` TEXT NOT NULL, PRIMARY KEY(`cve`))");
         }
     };
 

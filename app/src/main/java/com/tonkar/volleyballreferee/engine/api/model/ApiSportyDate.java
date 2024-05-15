@@ -10,7 +10,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class ApiSportyDate {
     @PrimaryKey
-    private int id;
+    public int id;
     @NonNull
-    private String date;
+    public String date;
 }

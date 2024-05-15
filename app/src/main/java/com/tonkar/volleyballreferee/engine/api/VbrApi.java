@@ -13,7 +13,8 @@ import com.tonkar.volleyballreferee.engine.api.model.ApiGame;
 import com.tonkar.volleyballreferee.engine.api.model.ApiGameSummary;
 import com.tonkar.volleyballreferee.engine.api.model.ApiLeague;
 import com.tonkar.volleyballreferee.engine.api.model.ApiNewUser;
-import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostValidateCode;
+import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostRequestFilterGames;
+import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostRequestValidateCode;
 import com.tonkar.volleyballreferee.engine.api.model.ApiRules;
 import com.tonkar.volleyballreferee.engine.api.model.ApiSet;
 import com.tonkar.volleyballreferee.engine.api.model.ApiTeam;
@@ -178,15 +179,8 @@ public class VbrApi {
                 .build();
     }
 
-    private Request buildSportyPost (String path, String jsonBody) {
-        return new Request.Builder()
-                .url(String.format(Locale.US, "%s/%s", VbrApi.SPORTY_ULR, path))
-                .post(RequestBody.create(jsonBody, JSON_MEDIA_TYPE))
-                .build();
-    }
-
     // Sporty API
-    public void validateSportyCode (ApiSportyPostValidateCode data, Context context, Callback callback) {
+    public void validateSportyCode (ApiSportyPostRequestValidateCode data, Context context, Callback callback) {
         // Parsing to form data
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -196,8 +190,14 @@ public class VbrApi {
         getHttpClient(context).newCall(request).enqueue(callback);
     }
 
-    public void getSportyFiltersAndGames(Context context, Callback callback) {
-        Request request = buildSportyGet("get-filters-and-games");
+    public void postSportyFilters (ApiSportyPostRequestFilterGames data, Context context, Callback callback) {// Parsing to form data
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("token", data.getToken())
+                .addFormDataPart("cancha", data.getCancha())
+                .addFormDataPart("dia", data.getDia())
+                .build();
+        Request request = buildSportyPostWithFormData("?action=getinfogames", requestBody);
         getHttpClient(context).newCall(request).enqueue(callback);
     }
 

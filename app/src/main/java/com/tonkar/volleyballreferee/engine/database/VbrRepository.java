@@ -22,6 +22,7 @@ import com.tonkar.volleyballreferee.engine.database.model.LeagueEntity;
 import com.tonkar.volleyballreferee.engine.database.model.RulesEntity;
 import com.tonkar.volleyballreferee.engine.database.model.SportyCourtEntity;
 import com.tonkar.volleyballreferee.engine.database.model.SportyDateEntity;
+import com.tonkar.volleyballreferee.engine.database.model.SportyGameEntity;
 import com.tonkar.volleyballreferee.engine.database.model.SportyStateEntity;
 import com.tonkar.volleyballreferee.engine.database.model.TeamEntity;
 import com.tonkar.volleyballreferee.engine.game.BaseGame;
@@ -49,6 +50,7 @@ public class VbrRepository {
     private final SportyCourtDao mSportyCourtDao;
     private final SportyDateDao  mSportyDateDao;
     private final SportyStateDao mSportyStateDao;
+    private final SportyGameDao  mSportyGameDao;
 
     public VbrRepository (Context context) {
         VbrDatabase db = VbrDatabase.getInstance(context);
@@ -61,6 +63,7 @@ public class VbrRepository {
         mSportyCourtDao = db.sportyCourtDao();
         mSportyDateDao = db.sportyDateDao();
         mSportyStateDao = db.sportyStateDao();
+        mSportyGameDao = db.sportyGameDao();
     }
 
     public void insertFriend(final String friendId, final String friendPseudo, boolean syncInsertion) {
@@ -388,6 +391,23 @@ public class VbrRepository {
 
     public void deleteSetupGame() {
         deleteFullGame(sSetupGame);
+    }
+
+    // Sporty games
+    public List<SportyGameEntity> listSportyGames () {
+        return mSportyGameDao.gameList();
+    }
+
+    public void insertSportyGame (SportyGameEntity game) {
+        mSportyGameDao.insert(game);
+    }
+
+    public void insertAllSportyGames (List<SportyGameEntity> gameList) {
+        mSportyGameDao.insertAll(gameList);
+    }
+
+    public void deleteAllSportyGames () {
+        mSportyGameDao.deleteAll();
     }
 
     // Sporty courts

@@ -30,7 +30,7 @@ import com.tonkar.volleyballreferee.engine.api.JsonConverters;
 import com.tonkar.volleyballreferee.engine.api.VbrApi;
 import com.tonkar.volleyballreferee.engine.api.model.ApiCount;
 import com.tonkar.volleyballreferee.engine.api.model.ApiSportyDate;
-import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostValidateCode;
+import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostRequestValidateCode;
 import com.tonkar.volleyballreferee.engine.api.model.ApiUserSummary;
 import com.tonkar.volleyballreferee.engine.api.model.ApiSportyValidateCode;
 import com.tonkar.volleyballreferee.engine.database.VbrRepository;
@@ -350,7 +350,7 @@ public class MainActivity extends NavigationActivity {
     // Sporty, validate token to get games
     private void fetchValidateSportyCode () {
         String token = etSportyCode.getText().toString();
-        ApiSportyPostValidateCode data = new ApiSportyPostValidateCode(token);
+        ApiSportyPostRequestValidateCode data = new ApiSportyPostRequestValidateCode(token);
         VbrApi.getInstance().validateSportyCode(data, this, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -361,9 +361,7 @@ public class MainActivity extends NavigationActivity {
                 if (response.code() == HttpURLConnection.HTTP_OK) {
                     ApiSportyValidateCode resp = JsonConverters.GSON.fromJson(response.body().string(), ApiSportyValidateCode.class);
                     if (resp.getCanchas() == null) {
-                        MainActivity.this.runOnUiThread(() -> {
-                            UiUtils.makeErrorText(MainActivity.this, getString(R.string.sporty_wrong_token), Toast.LENGTH_LONG).show();
-                        });
+                        MainActivity.this.runOnUiThread(() -> UiUtils.makeErrorText(MainActivity.this, getString(R.string.sporty_wrong_token), Toast.LENGTH_LONG).show());
                     } else {
                         saveTokenData(resp, token);
                         MainActivity.this.runOnUiThread(() -> {
@@ -393,8 +391,6 @@ public class MainActivity extends NavigationActivity {
 
         // Repository
         repository = new VbrRepository(this);
-
-
 
         repository.deleteAllCourts();
         repository.insertAllCourts(courtList);

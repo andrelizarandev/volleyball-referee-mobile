@@ -15,30 +15,30 @@ public class ApiSportyValidateCode {
 
     @Data
     public static class EventData {
-        private String cve;
-        private String titulo;
-        private String fecha_inicio;
-        private String fecha_fin;
+        public String cve;
+        public String titulo;
+        public String fecha_inicio;
+        public String fecha_fin;
     }
 
     @Data
     public static class CanchaData {
         @PrimaryKey
         @NonNull
-        private String cve;
+        public String cve;
         @NonNull
-        private String nombre;
+        public String nombre;
         @NonNull
-        private String deporte;
+        public String deporte;
     }
 
     @Data
     public static class EstadoData {
         @PrimaryKey
         @NonNull
-        private String cve;
+        public String cve;
         @NonNull
-        private String title;
+        public String title;
     }
 
 }

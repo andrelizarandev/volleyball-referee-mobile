@@ -22,7 +22,7 @@ public class FullGameEntity {
     @ColumnInfo(name = "content")
     private String content;
 
-    public FullGameEntity() {
+    public FullGameEntity () {
         this.type = "";
         this.content = "";
     }

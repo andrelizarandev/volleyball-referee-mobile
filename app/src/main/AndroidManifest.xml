@@ -21,6 +21,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
         <activity
+            android:name=".ui.ListSportyGamesActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.SportyFilterDataActivity"
             android:exported="false" />
         <activity
