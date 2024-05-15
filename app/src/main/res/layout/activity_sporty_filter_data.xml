@@ -11,87 +11,95 @@
 
     <include layout="@layout/toolbar" />
 
-    <LinearLayout
-        android:orientation="vertical"
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/default_margin_size">
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin_size"
+        style="@style/AppTheme.RoundedCard">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginStart="@dimen/big_margin_size"
-            android:layout_marginTop="@dimen/big_margin_size"
-            android:layout_marginEnd="@dimen/big_margin_size"
-            android:text="@string/sporty_spinner_court_label"
-            android:textAppearance="@style/AppTheme.TextView"
-            android:textSize="@dimen/default_text_size" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin_size">
 
-        <androidx.appcompat.widget.AppCompatSpinner
-            android:id="@+id/sporty_filter_data_court_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/big_margin_size"
-            android:layout_marginEnd="@dimen/big_margin_size"
-            android:layout_marginBottom="@dimen/big_margin_size"
-            android:prompt="@string/sporty_spinner_court_label"
-            android:spinnerMode="dialog"
-            android:textColor="@color/colorDisabledText"
-            android:textSize="@dimen/default_text_size" />
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="@dimen/big_margin_size"
+                android:layout_marginTop="@dimen/big_margin_size"
+                android:layout_marginEnd="@dimen/big_margin_size"
+                android:text="@string/sporty_spinner_court_label"
+                android:textAppearance="@style/AppTheme.TextView"
+                android:textSize="@dimen/default_text_size" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginStart="@dimen/big_margin_size"
-            android:layout_marginTop="@dimen/big_margin_size"
-            android:layout_marginEnd="@dimen/big_margin_size"
-            android:text="@string/sporty_spinner_day_label"
-            android:textAppearance="@style/AppTheme.TextView"
-            android:textSize="@dimen/default_text_size" />
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/sporty_filter_data_court_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/big_margin_size"
+                android:layout_marginEnd="@dimen/big_margin_size"
+                android:layout_marginBottom="@dimen/big_margin_size"
+                android:prompt="@string/sporty_spinner_court_label"
+                android:spinnerMode="dialog"
+                android:textColor="@color/colorDisabledText"
+                android:textSize="@dimen/default_text_size" />
 
-        <androidx.appcompat.widget.AppCompatSpinner
-            android:id="@+id/sporty_filter_data_date_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/big_margin_size"
-            android:layout_marginEnd="@dimen/big_margin_size"
-            android:layout_marginBottom="@dimen/big_margin_size"
-            android:prompt="@string/sporty_spinner_day_label"
-            android:spinnerMode="dialog"
-            android:textColor="@color/colorDisabledText"
-            android:textSize="@dimen/default_text_size" />
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="@dimen/big_margin_size"
+                android:layout_marginTop="@dimen/big_margin_size"
+                android:layout_marginEnd="@dimen/big_margin_size"
+                android:text="@string/sporty_spinner_day_label"
+                android:textAppearance="@style/AppTheme.TextView"
+                android:textSize="@dimen/default_text_size" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginStart="@dimen/big_margin_size"
-            android:layout_marginTop="@dimen/big_margin_size"
-            android:layout_marginEnd="@dimen/big_margin_size"
-            android:text="@string/sporty_spinner_state_label"
-            android:textAppearance="@style/AppTheme.TextView"
-            android:textSize="@dimen/default_text_size" />
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/sporty_filter_data_date_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/big_margin_size"
+                android:layout_marginEnd="@dimen/big_margin_size"
+                android:layout_marginBottom="@dimen/big_margin_size"
+                android:prompt="@string/sporty_spinner_day_label"
+                android:spinnerMode="dialog"
+                android:textColor="@color/colorDisabledText"
+                android:textSize="@dimen/default_text_size" />
 
-        <androidx.appcompat.widget.AppCompatSpinner
-            android:id="@+id/sporty_filter_data_state_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/big_margin_size"
-            android:layout_marginEnd="@dimen/big_margin_size"
-            android:layout_marginBottom="@dimen/big_margin_size"
-            android:text="@string/sporty_spinner_state_label"
-            android:spinnerMode="dialog"
-            android:textColor="@color/colorDisabledText"
-            android:textSize="@dimen/default_text_size" />
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="@dimen/big_margin_size"
+                android:layout_marginTop="@dimen/big_margin_size"
+                android:layout_marginEnd="@dimen/big_margin_size"
+                android:text="@string/sporty_spinner_state_label"
+                android:textAppearance="@style/AppTheme.TextView"
+                android:textSize="@dimen/default_text_size" />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/sporty_filter_games"
-            android:id="@+id/sporty_filter_data_search_btn"/>
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/sporty_filter_data_state_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/big_margin_size"
+                android:layout_marginEnd="@dimen/big_margin_size"
+                android:layout_marginBottom="@dimen/big_margin_size"
+                android:text="@string/sporty_spinner_state_label"
+                android:spinnerMode="dialog"
+                android:textColor="@color/colorDisabledText"
+                android:textSize="@dimen/default_text_size" />
 
-    </LinearLayout>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sporty_filter_games"
+                android:id="@+id/sporty_filter_data_search_btn"/>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>
