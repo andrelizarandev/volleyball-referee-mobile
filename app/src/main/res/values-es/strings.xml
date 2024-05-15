@@ -392,5 +392,10 @@
     <string name="sporty_spinner_day_label">Selecciona un día</string>
     <string name="sporty_spinner_state_label">Selecciona un estado</string>
     <string name="sporty_filter_games">Filtrar juegos</string>
+    <string name="sporty_category">Categoría</string>
+    <string name="sporty_phase">Fase</string>
+    <string name="sporty_team_1">Equipo #1</string>
+    <string name="sporty_team_2">Equipo #2</string>
+    <string name="sporty_game_state">Pendiente</string>
 
 </resources>

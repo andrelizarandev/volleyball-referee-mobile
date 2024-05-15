@@ -198,4 +198,10 @@
         <item name="colorPrimary">@color/colorPrimary</item>
     </style>
 
+    <style name="AppTheme.BlueTitle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">@dimen/default_text_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

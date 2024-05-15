@@ -391,5 +391,10 @@
     <string name="sporty_spinner_day_label">-</string>
     <string name="sporty_spinner_state_label">-</string>
     <string name="sporty_filter_games">-</string>
+    <string name="sporty_category">-</string>
+    <string name="sporty_phase">-</string>
+    <string name="sporty_team_1">-</string>
+    <string name="sporty_team_2">-</string>
+    <string name="sporty_game_state">-</string>
 
 </resources>

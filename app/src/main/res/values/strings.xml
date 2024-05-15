@@ -402,6 +402,14 @@
     <string name="sporty_spinner_court_label">Select a court</string>
     <string name="sporty_spinner_day_label">Select a day</string>
     <string name="sporty_spinner_state_label">Select a state</string>
+    <string name="sporty_filter_games">Filter games</string>
+    <string name="sporty_category">Category</string>
+    <string name="sporty_phase">Phase</string>
+    <string name="sporty_team_1">Team #1</string>
+    <string name="sporty_team_2">Team #2</string>
+    <string name="sporty_game_counter" translatable="false">0 - 0 - 0</string>
+    <string name="sporty_game_date_and_hour" translatable="false">15/05/2024 - 12:00:00</string>
+    <string name="sporty_game_state">Pending</string>
 
     <string-array name="points_per_set_values" translatable="false">
         <item>40</item>
@@ -515,7 +523,5 @@
         <item>#ffffff</item>
         <item>#0d1017</item>
     </string-array>
-    <string name="sporty_filter_games">Filter games</string>
-
 
 </resources>
