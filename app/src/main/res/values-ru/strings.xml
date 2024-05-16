@@ -208,7 +208,7 @@
     <string name="delete_game_question">Удалить данный матч?</string>
     <string name="deleted_game">Матч успешно удалён</string>
     <string name="deleted_selected_games">Все матчи успешно удалены</string>
-    <string name="players">Игроки</string>
+    <string name="change_player_names">Игроки</string>
     <string name="create_score_sheet">Создать отчёт матча</string>
     <string name="score_sheet_exception">Произошла ошибка при создании отчёта матча</string>
     <string name="signatures">Подписи</string>

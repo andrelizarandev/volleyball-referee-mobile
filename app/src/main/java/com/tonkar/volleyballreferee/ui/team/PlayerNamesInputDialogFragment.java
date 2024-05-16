@@ -59,7 +59,7 @@ public class PlayerNamesInputDialogFragment extends DialogFragment {
 
         AlertDialog alertDialog = new AlertDialog
                 .Builder(getContext(), R.style.AppTheme_Dialog)
-                .setTitle(R.string.players).setView(mView)
+                .setTitle(R.string.change_player_names).setView(mView)
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> dismiss())
                 .create();
 

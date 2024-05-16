@@ -209,7 +209,7 @@
     <string name="delete_game_question">¿Quieres borrar este partido?</string>
     <string name="deleted_game">Partido borrado</string>
     <string name="deleted_selected_games">Todos los partidos borrados</string>
-    <string name="players">Jugadores</string>
+    <string name="change_player_names">Nombre de Jugadores</string>
     <string name="create_score_sheet">Crear acta</string>
     <string name="score_sheet_exception">Fallo al crear o mostrar el acta</string>
     <string name="signatures">Firmas</string>

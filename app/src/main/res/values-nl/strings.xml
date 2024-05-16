@@ -209,7 +209,7 @@
     <string name="delete_game_question">Wil je deze wedstrijd verwijderen?</string>
     <string name="deleted_game">Wedstrijd is verwijderd</string>
     <string name="deleted_selected_games">Alle wedstrijden zijn verwijderd</string>
-    <string name="players">Spelers</string>
+    <string name="change_player_names">Spelers</string>
     <string name="create_score_sheet">Creëer scoreblad</string>
     <string name="score_sheet_exception">Kan het scoreblad niet maken of weergeven</string>
     <string name="signatures">Handtekeningen</string>

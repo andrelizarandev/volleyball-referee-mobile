@@ -209,7 +209,7 @@
     <string name="delete_game_question">Kustutan antud mängu?</string>
     <string name="deleted_game">Mäng on edukalt kustutatud</string>
     <string name="deleted_selected_games">Kõik mängud on edukalt kustutatud</string>
-    <string name="players">Mängijad</string>
+    <string name="change_player_names">Mängijad</string>
     <string name="create_score_sheet">Protokolli loomine</string>
     <string name="score_sheet_exception">Protokolli loomine või selle kuvamine on ebaõnnestunud</string>
     <string name="signatures">Allkirjad</string>

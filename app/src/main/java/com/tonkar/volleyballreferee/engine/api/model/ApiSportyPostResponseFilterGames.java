@@ -14,10 +14,10 @@ public class ApiSportyPostResponseFilterGames {
 
     public static class JuegosData {
         public String cve;
-        public ApiSportyPostResponseFilterGames.CompetenciaData competencia;
-        public ApiSportyPostResponseFilterGames.EquipoData equipo1;
-        public ApiSportyPostResponseFilterGames.EquipoData equipo2;
-        public ApiSportyPostResponseFilterGames.ConfigGame confiGame;
+        public CompetenciaData competencia;
+        public EquipoData equipo1;
+        public EquipoData equipo2;
+        public ConfigGame confiGame;
         public String fase;
         public String estado;
         public String dia;
@@ -35,6 +35,7 @@ public class ApiSportyPostResponseFilterGames {
         public String cve;
         public String nombre;
         public MarcadorData marcador;
+        public JugadorData[] jugadores;
     }
 
     public static class MarcadorData {
@@ -46,6 +47,14 @@ public class ApiSportyPostResponseFilterGames {
     public static class ConfigGame {
         public String cntSets;
         public int pntSet;
+    }
+
+    public static class JugadorData {
+        public String cve;
+        public String nombre_completo;
+        public int dorsal;
+        public Boolean es_capitan;
+        public Boolean es_libero;
     }
 
 }

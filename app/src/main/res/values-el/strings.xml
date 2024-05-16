@@ -209,7 +209,7 @@
     <string name="delete_game_question">Διαγραφή αυτού του αγώνα;</string>
     <string name="deleted_game">Αγώνας διαγράφηκε</string>
     <string name="deleted_selected_games">Όλοι οι αγώνες διαγράφηκαν</string>
-    <string name="players">Παίκτες</string>
+    <string name="change_player_names">Παίκτες</string>
     <string name="create_score_sheet">Δημιουργία φύλλου αγώνα</string>
     <string name="score_sheet_exception">Αποτυχία δημιουργίας ή προβολής του φύλλου αγώνα</string>
     <string name="signatures">Υπογραφές</string>

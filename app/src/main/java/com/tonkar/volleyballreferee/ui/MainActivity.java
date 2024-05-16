@@ -97,6 +97,8 @@ public class MainActivity extends NavigationActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+
+
         showOnboarding();
 
         super.onCreate(savedInstanceState);

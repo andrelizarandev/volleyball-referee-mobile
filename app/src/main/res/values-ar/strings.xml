@@ -209,7 +209,7 @@
     <string name="delete_game_question">هل تريد حذف هذه المباراة المسجلة؟</string>
     <string name="deleted_game">تم مسح المباراة</string>
     <string name="deleted_selected_games">تم مسح جميع المباريات</string>
-    <string name="players">اللاعبين</string>
+    <string name="change_player_names">اللاعبين</string>
     <string name="create_score_sheet">إنشاء استمارة التسجيل</string>
     <string name="score_sheet_exception">فشل في إنشاء أو عرض إستمارة التسجيل</string>
     <string name="signatures">التوقيعات</string>

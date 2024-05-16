@@ -52,7 +52,7 @@ public class StoredAdvancedGameActivity extends StoredGameActivity {
 
         final TabLayout storedGameTabs = findViewById(R.id.stored_game_tabs);
         new TabLayoutMediator(storedGameTabs, storedGamePager, (tab, position) -> {
-            String tabText = position == 0 ? getString(R.string.players) : position == 1 ? getString(R.string.rules) : String.format(getString(R.string.set_number), position - 1);
+            String tabText = position == 0 ? getString(R.string.change_player_names) : position == 1 ? getString(R.string.rules) : String.format(getString(R.string.set_number), position - 1);
             tab.setText(tabText);
         }).attach();
     }

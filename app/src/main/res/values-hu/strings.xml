@@ -210,7 +210,7 @@
     <string name="delete_game_question">Biztosan törlöd a mérkőzést?</string>
     <string name="deleted_game">Mérkőzés törölve</string>
     <string name="deleted_selected_games">Minden mérkőzés törölve</string>
-    <string name="players">Játékosok</string>
+    <string name="change_player_names">Játékosok</string>
     <string name="create_score_sheet">Jegyzőkönyv készítése</string>
     <string name="score_sheet_exception">Hiba történt a jegyzőkönyv megjelenítése során</string>
     <string name="signatures">Aláírások</string>

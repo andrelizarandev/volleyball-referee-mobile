@@ -209,7 +209,7 @@
     <string name="delete_game_question">Искате ли да изтриете този мач?</string>
     <string name="deleted_game">Мачът е изтрит</string>
     <string name="deleted_selected_games">Всички избрани мачове бяха изтрити</string>
-    <string name="players">Играчи</string>
+    <string name="change_player_names">Играчи</string>
     <string name="create_score_sheet">Създайте протокол</string>
     <string name="score_sheet_exception">Неуспешно създаване или показване на протокола</string>
     <string name="signatures">Подписи</string>

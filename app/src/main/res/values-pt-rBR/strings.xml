@@ -202,7 +202,7 @@
     <string name="delete_game_question">Deseja deletar essa partida?</string>
     <string name="deleted_game">Partida deletada</string>
     <string name="deleted_selected_games">Todas as partidas foram deletadas</string>
-    <string name="players">Jogadores</string>
+    <string name="change_player_names">Jogadores</string>
     <string name="create_score_sheet">Gerar relatório da partida</string>
     <string name="score_sheet_exception">Falha ao gerar ou exibir o relatório da partida</string>
 

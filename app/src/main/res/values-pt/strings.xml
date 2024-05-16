@@ -209,7 +209,7 @@
     <string name="delete_game_question">Deseja apagar esse jogo?</string>
     <string name="deleted_game">Jogo apagado</string>
     <string name="deleted_selected_games">Todos os jogos foram apagados</string>
-    <string name="players">Jogadores</string>
+    <string name="change_player_names">Jogadores</string>
     <string name="create_score_sheet">Criar boletim de jogo</string>
     <string name="score_sheet_exception">Falha a criar ou mostrar o boletim de jogo</string>
     <string name="signatures">Assinaturas</string>

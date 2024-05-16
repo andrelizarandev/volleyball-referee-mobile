@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:text="@string/players"
+            android:text="@string/change_player_names"
             android:textAppearance="@style/AppTheme.TextView"
             android:textColor="@color/colorOnSurface"
             android:textSize="@dimen/default_text_size" />
@@ -103,7 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:text="@string/players"
+            android:text="@string/change_player_names"
             android:textAppearance="@style/AppTheme.TextView"
             android:textColor="@color/colorOnSurface"
             android:textSize="@dimen/default_text_size" />

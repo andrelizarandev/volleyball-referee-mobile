@@ -209,7 +209,7 @@
     <string name="delete_game_question">Möchten Sie dieses Spiel löschen?</string>
     <string name="deleted_game">Spiel wurde gelöscht</string>
     <string name="deleted_selected_games">Alle Spiele wurden gelöscht</string>
-    <string name="players">Spieler</string>
+    <string name="change_player_names">Spieler</string>
     <string name="create_score_sheet">Spielberichtsbogen erstellen</string>
     <string name="score_sheet_exception">Fehler beim Erstellen oder Anzeigen des Spielberichtbogens.</string>
     <string name="signatures">Unterschriften</string>

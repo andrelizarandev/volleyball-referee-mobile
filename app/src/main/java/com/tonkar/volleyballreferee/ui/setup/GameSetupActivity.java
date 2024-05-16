@@ -63,7 +63,7 @@ public class GameSetupActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate (Bundle savedInstanceState) {
         StoredGamesService storedGamesService = new StoredGamesManager(this);
         mGame = storedGamesService.loadSetupGame();
 
@@ -208,8 +208,7 @@ public class GameSetupActivity extends AppCompatActivity {
 
     private void initGameSetupNavigation(final BottomNavigationView gameSetupNavigation, Bundle savedInstanceState) {
         gameSetupNavigation.setOnItemSelectedListener(item -> {
-                    final Fragment fragment;
-
+            final Fragment fragment;
             int itemId = item.getItemId();
             if (itemId == R.id.home_team_tab) {
                 fragment = TeamSetupFragment.newInstance(mGame.getTeamsKind(), TeamType.HOME, true);

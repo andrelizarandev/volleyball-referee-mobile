@@ -209,7 +209,7 @@
     <string name="delete_game_question">Vuoi cancellare la partita?</string>
     <string name="deleted_game">La partita è stata cancellata</string>
     <string name="deleted_selected_games">Tutte le partite son state cancellate</string>
-    <string name="players">Giocatori</string>
+    <string name="change_player_names">Giocatori</string>
     <string name="create_score_sheet">Creare il referto di gara</string>
     <string name="score_sheet_exception">Errore nella creazione del referto di gara</string>
     <string name="signatures">Firme</string>

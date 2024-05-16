@@ -239,7 +239,7 @@ public class ScoreSheetBuilder {
         Element cardDiv = new Element("div");
         cardDiv.addClass("div-card").addClass("spacing-before");
 
-        cardDiv.appendChild(createTitleDiv(mContext.getString(R.string.players)));
+        cardDiv.appendChild(createTitleDiv(mContext.getString(R.string.change_player_names)));
 
         Element teamsDiv = new Element("div");
         teamsDiv.addClass("div-grid-h-g");

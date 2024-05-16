@@ -209,7 +209,7 @@
     <string name="delete_game_question">Czy chcesz usunąć wszystkie mecze?</string>
     <string name="deleted_game">Mecz usunięty</string>
     <string name="deleted_selected_games">Wszystkie mecze usunięte</string>
-    <string name="players">Gracze</string>
+    <string name="change_player_names">Gracze</string>
     <string name="create_score_sheet">Utwórz protokół zawodów</string>
     <string name="score_sheet_exception">Nie można utworzyć lub wyświetlić protokołu zawodów</string>
     <string name="signatures">Podpisy</string>
