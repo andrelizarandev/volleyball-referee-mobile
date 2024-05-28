@@ -61,25 +61,25 @@ public class TeamSetupFragment extends Fragment implements BaseTeamServiceHandle
     private LiberoAdapter  mLiberoAdapter;
     private MaterialButton mGenderButton;
     private MaterialButton mPlayerNamesButton;
+
+    // Sporty
     private VbrRepository mVbrRepository;
 
     public TeamSetupFragment() {}
 
     // Sporty configs
-    public ApiSportyPostResponseFilterGames.JuegosData getSportyGame () {
-        List<SportyGameEntity> gameList = mVbrRepository.listSportyGames();
-        SportyGameEntity game = gameList.get(0);
-        return new Gson().fromJson(game.getContent(), ApiSportyPostResponseFilterGames.JuegosData.class);
+    public ApiSportyPostResponseFilterGames.JuegosData getSportyGameWithIndex (int index) {
+        List<SportyGameEntity> sportyGames = mVbrRepository.listSportyGames();
+        SportyGameEntity selectedGame = sportyGames.get(index);
+        return new Gson().fromJson(selectedGame.getContent(), ApiSportyPostResponseFilterGames.JuegosData.class);
     }
 
-    public void setTeamDataIfIsSelectedFromSportyFilters () {
-        ApiSportyPostResponseFilterGames.JuegosData parsedGame = getSportyGame();
+    public void setTeamNames (ApiSportyPostResponseFilterGames.JuegosData parsedGame) {
         mTeamService.setTeamName(TeamType.HOME, parsedGame.equipo1.nombre);
         mTeamService.setTeamName(TeamType.GUEST, parsedGame.equipo2.nombre);
     }
 
-    public void setSportyPlayersList () {
-        ApiSportyPostResponseFilterGames.JuegosData parsedGame = getSportyGame();
+    public void setSportyPlayersList (ApiSportyPostResponseFilterGames.JuegosData parsedGame) {
         for (ApiSportyPostResponseFilterGames.JugadorData player : parsedGame.equipo1.jugadores) {
             mTeamService.addPlayer(TeamType.HOME, player.dorsal);
         }
@@ -88,8 +88,7 @@ public class TeamSetupFragment extends Fragment implements BaseTeamServiceHandle
         }
     }
 
-    public void setSportyCaptain () {
-        ApiSportyPostResponseFilterGames.JuegosData parsedGame = getSportyGame();
+    public void setSportyCaptain (ApiSportyPostResponseFilterGames.JuegosData parsedGame) {
         for (ApiSportyPostResponseFilterGames.JugadorData player : parsedGame.equipo1.jugadores) {
             if (player.es_capitan) { mTeamService.setCaptain(TeamType.HOME, player.dorsal); }
         }
@@ -98,8 +97,7 @@ public class TeamSetupFragment extends Fragment implements BaseTeamServiceHandle
         }
     }
 
-    public void setSportyLibero () {
-        ApiSportyPostResponseFilterGames.JuegosData parsedGame = getSportyGame();
+    public void setSportyLibero (ApiSportyPostResponseFilterGames.JuegosData parsedGame) {
         for (ApiSportyPostResponseFilterGames.JugadorData player : parsedGame.equipo1.jugadores) {
             if (player.es_libero) { mTeamService.addLibero(TeamType.HOME, player.dorsal); }
         }
@@ -108,8 +106,7 @@ public class TeamSetupFragment extends Fragment implements BaseTeamServiceHandle
         }
     }
 
-    public void setPlayerNames () {
-        ApiSportyPostResponseFilterGames.JuegosData parsedGame = getSportyGame();
+    public void setPlayerNames (ApiSportyPostResponseFilterGames.JuegosData parsedGame) {
         for (ApiSportyPostResponseFilterGames.JugadorData player : parsedGame.equipo1.jugadores) {
             mTeamService.setPlayerName(TeamType.HOME, player.dorsal, player.nombre_completo);
         }
@@ -118,8 +115,7 @@ public class TeamSetupFragment extends Fragment implements BaseTeamServiceHandle
         }
     }
 
-    public void setGameGender () {
-        ApiSportyPostResponseFilterGames.JuegosData parsedGame = getSportyGame();
+    public void setGameGender (ApiSportyPostResponseFilterGames.JuegosData parsedGame) {
         String currentGender = parsedGame.competencia.rama;
         switch (currentGender) {
             case "VAR" -> {
@@ -137,11 +133,12 @@ public class TeamSetupFragment extends Fragment implements BaseTeamServiceHandle
         }
     }
 
-    public static TeamSetupFragment newInstance(GameType gameType, TeamType teamType, boolean isGameContext) {
+    public static TeamSetupFragment newInstance(GameType gameType, TeamType teamType, boolean isGameContext, int selectedSportyGameIndex) {
         TeamSetupFragment fragment = new TeamSetupFragment();
         Bundle args = new Bundle();
         args.putString(GameType.class.getName(), gameType.toString());
         args.putString(TeamType.class.getName(), teamType.toString());
+        args.putInt("sporty_game_position", selectedSportyGameIndex);
         args.putBoolean("is_game", isGameContext);
         fragment.setArguments(args);
         return fragment;
@@ -151,9 +148,13 @@ public class TeamSetupFragment extends Fragment implements BaseTeamServiceHandle
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Sporty
-        setTeamDataIfIsSelectedFromSportyFilters();
-        setSportyPlayersList();
-        setGameGender();
+        int selectedSportyGameIndex = getArguments().getInt("sporty_game_position");
+
+        ApiSportyPostResponseFilterGames.JuegosData game = getSportyGameWithIndex(selectedSportyGameIndex);
+
+        setTeamNames(game);
+        setSportyPlayersList(game);
+        setGameGender(game);
 
         Log.i(Tags.SETUP_UI, "Create team setup fragment");
         mLayoutInflater = inflater;
@@ -313,9 +314,9 @@ public class TeamSetupFragment extends Fragment implements BaseTeamServiceHandle
         computeConfirmItemVisibility();
 
         // Sporty
-        setSportyCaptain();
-        setSportyLibero();
-        setPlayerNames();
+        setSportyCaptain(game);
+        setSportyLibero(game);
+        setPlayerNames(game);
 
         return view;
     }

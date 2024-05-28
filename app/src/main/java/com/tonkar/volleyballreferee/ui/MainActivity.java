@@ -34,6 +34,7 @@ import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostRequestValidat
 import com.tonkar.volleyballreferee.engine.api.model.ApiUserSummary;
 import com.tonkar.volleyballreferee.engine.api.model.ApiSportyValidateCode;
 import com.tonkar.volleyballreferee.engine.database.VbrRepository;
+import com.tonkar.volleyballreferee.engine.database.model.SportyTokenEntity;
 import com.tonkar.volleyballreferee.engine.game.BeachGame;
 import com.tonkar.volleyballreferee.engine.game.GameFactory;
 import com.tonkar.volleyballreferee.engine.game.GameType;
@@ -95,9 +96,9 @@ public class MainActivity extends NavigationActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate (Bundle savedInstanceState) {
 
-
+        repository = new VbrRepository(this);
 
         showOnboarding();
 
@@ -391,9 +392,9 @@ public class MainActivity extends NavigationActivity {
         List<ApiSportyValidateCode.CanchaData> courtList = Arrays.asList(data.getCanchas());
         List<ApiSportyValidateCode.EstadoData> stateList = Arrays.asList(data.getEstados());
 
-        // Repository
-        repository = new VbrRepository(this);
+        SportyTokenEntity tokenEntity = new SportyTokenEntity(token);
 
+        // Repository
         repository.deleteAllCourts();
         repository.insertAllCourts(courtList);
 
@@ -402,6 +403,9 @@ public class MainActivity extends NavigationActivity {
 
         repository.deleteAllStates();
         repository.insertAllStates(stateList);
+
+        repository.deleteSportyToken();
+        repository.insertSportyToken(tokenEntity);
 
     }
 

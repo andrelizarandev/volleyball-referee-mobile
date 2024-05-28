@@ -3,7 +3,6 @@ package com.tonkar.volleyballreferee.engine.database.model;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,14 +10,16 @@ import lombok.Setter;
 @Getter @Setter
 public class SportyGameEntity {
 
+    @PrimaryKey
+    @NonNull
+    private String cve;
+    @NonNull
+    private String content;
+
     public SportyGameEntity (String cve, String content) {
         this.cve = cve;
         this.content = content;
     }
 
-    @PrimaryKey
-    @NonNull
-    private String cve;
-    private String content;
 
 }

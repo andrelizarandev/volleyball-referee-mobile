@@ -19,6 +19,7 @@ import com.tonkar.volleyballreferee.engine.database.model.SportyCourtEntity;
 import com.tonkar.volleyballreferee.engine.database.model.SportyDateEntity;
 import com.tonkar.volleyballreferee.engine.database.model.SportyGameEntity;
 import com.tonkar.volleyballreferee.engine.database.model.SportyStateEntity;
+import com.tonkar.volleyballreferee.engine.database.model.SportyTokenEntity;
 import com.tonkar.volleyballreferee.engine.database.model.TeamEntity;
 
 import java.util.concurrent.ExecutorService;
@@ -35,8 +36,9 @@ import java.util.concurrent.Executors;
                 SportyCourtEntity.class,
                 SportyDateEntity.class,
                 SportyStateEntity.class,
-                SportyGameEntity.class
-        }, version = 6)
+                SportyGameEntity.class,
+                SportyTokenEntity.class
+        }, version = 7)
 
 @TypeConverters({DatabaseConverters.class})
 
@@ -98,6 +100,8 @@ public abstract class VbrDatabase extends RoomDatabase {
 
     public abstract SportyGameDao sportyGameDao();
 
+    public abstract SportyTokenDao sportyTokenDao();
+
     private static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
@@ -133,7 +137,7 @@ public abstract class VbrDatabase extends RoomDatabase {
         }
     };
 
-    private static final Migration MIGRATION_4_5 = new Migration(3, 4) {
+    private static final Migration MIGRATION_4_5 = new Migration(4, 5) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             // Sporty
@@ -141,19 +145,19 @@ public abstract class VbrDatabase extends RoomDatabase {
         }
     };
 
-    private static final Migration MIGRATION_5_6 = new Migration(3, 4) {
+    private static final Migration MIGRATION_5_6 = new Migration(5, 6) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             // Sporty
-            database.execSQL("CREATE TABLE `sporty_token` (`token` TEXT NOT NULL, PRIMARY KEY(`token`))");
+            database.execSQL("CREATE TABLE `sporty_tokens` (`token` TEXT NOT NULL, PRIMARY KEY(`token`))");
         }
     };
 
-    private static final Migration MIGRATION_6_7 = new Migration(3, 4) {
+    private static final Migration MIGRATION_6_7 = new Migration(6, 7) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             // Sporty
-            database.execSQL("CREATE TABLE `sporty_games` (`content` TEXT NOT NULL, `cve` TEXT NOT NULL, PRIMARY KEY(`cve`))");
+            database.execSQL("CREATE TABLE IF NOT EXISTS `sporty_games` (`content` TEXT NOT NULL, `cve` TEXT NOT NULL, PRIMARY KEY(`cve`))");
         }
     };
 

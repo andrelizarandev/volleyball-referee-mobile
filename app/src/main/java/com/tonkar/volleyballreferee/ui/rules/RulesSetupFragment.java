@@ -18,9 +18,13 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
 import com.tonkar.volleyballreferee.R;
 import com.tonkar.volleyballreferee.engine.Tags;
 import com.tonkar.volleyballreferee.engine.api.model.ApiRulesSummary;
+import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostResponseFilterGames;
+import com.tonkar.volleyballreferee.engine.database.VbrRepository;
+import com.tonkar.volleyballreferee.engine.database.model.SportyGameEntity;
 import com.tonkar.volleyballreferee.engine.game.GameType;
 import com.tonkar.volleyballreferee.engine.rules.Rules;
 import com.tonkar.volleyballreferee.engine.service.StoredRulesManager;
@@ -30,6 +34,7 @@ import com.tonkar.volleyballreferee.ui.interfaces.RulesHandler;
 import com.tonkar.volleyballreferee.ui.setup.AutocompleteRulesListAdapter;
 import com.tonkar.volleyballreferee.ui.setup.GameSetupActivity;
 
+import java.util.List;
 import java.util.Locale;
 
 public class RulesSetupFragment extends Fragment implements RulesHandler {
@@ -74,6 +79,8 @@ public class RulesSetupFragment extends Fragment implements RulesHandler {
 
     private TextView mSubstitutionsLimitationDescription;
 
+    private VbrRepository mVbrRepository;
+
     public RulesSetupFragment() {}
 
     public static RulesSetupFragment newInstance() {
@@ -92,6 +99,8 @@ public class RulesSetupFragment extends Fragment implements RulesHandler {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i(Tags.RULES, "Create rules setup fragment");
         View view;
+
+        mVbrRepository = new VbrRepository(getContext());
 
         final boolean isGameContext = getArguments().getBoolean("is_game");
 
@@ -142,6 +151,9 @@ public class RulesSetupFragment extends Fragment implements RulesHandler {
         mPointsPerSetSpinner = view.findViewById(R.id.rules_points_per_set);
         mPointsPerSetAdapter = new IntegerRuleAdapter(getContext(), inflater, getResources().getStringArray(R.array.points_per_set_entries), getResources().getStringArray(R.array.points_per_set_values));
         mPointsPerSetSpinner.setAdapter(mPointsPerSetAdapter);
+
+        // Sporty
+        getSportyGameConfig();
 
         mTieBreakSwitch = view.findViewById(R.id.rules_tie_break);
 
@@ -449,6 +461,31 @@ public class RulesSetupFragment extends Fragment implements RulesHandler {
         if (GameType.INDOOR.equals(mRules.getKind()) || GameType.INDOOR_4X4.equals(mRules.getKind())) {
             mConsecutiveServesSpinner.setSelection(mConsecutiveServesAdapter.getPosition(mRules.getCustomConsecutiveServesPerPlayer()));
         }
+    }
+
+    // Sporty configs
+    private void getSportyGameConfig () {
+        ApiSportyPostResponseFilterGames.JuegosData parsedGame = mVbrRepository.getFirstSportyGame();
+        int sets = getSetIndexByValue(parsedGame.confiGame.cntSets);
+        int points = getPointsIndexByValue(parsedGame.confiGame.pntSet);
+        mSetsPerGameSpinner.setSelection(sets);
+        mPointsPerSetSpinner.setSelection(points);
+    }
+
+    private int getSetIndexByValue (String sets) {
+        return switch (sets) {
+            case "1" -> 0;
+            case "3" -> 1;
+            default -> 2;
+        };
+    }
+
+    private int getPointsIndexByValue (int points) {
+        return switch (points) {
+            case 15 -> 0;
+            case 21 -> 1;
+            default -> 2;
+        };
     }
 
     private void computeConfirmItemVisibility() {

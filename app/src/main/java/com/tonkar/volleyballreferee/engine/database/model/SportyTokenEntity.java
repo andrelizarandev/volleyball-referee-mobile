@@ -16,6 +16,10 @@ public class SportyTokenEntity {
 
     @PrimaryKey
     @NonNull
-    private String token;
+    public String token;
+
+    public SportyTokenEntity (@NonNull String token) {
+        this.token = token;
+    }
 
 }

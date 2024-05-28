@@ -16,7 +16,6 @@ import com.tonkar.volleyballreferee.engine.api.JsonConverters
 import com.tonkar.volleyballreferee.engine.api.VbrApi
 import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostRequestFilterGames
 import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostResponseFilterGames
-import com.tonkar.volleyballreferee.engine.api.model.ApiSportyValidateCode
 import com.tonkar.volleyballreferee.engine.database.VbrRepository
 import com.tonkar.volleyballreferee.engine.database.model.SportyGameEntity
 import com.tonkar.volleyballreferee.engine.sporty.parsers.SportyCourseParser
@@ -112,7 +111,9 @@ class SportyFilterDataActivity : AppCompatActivity() {
         val statesList = vbrRepository.listStates()
         val selectedState = statesList[state]
 
-        val obj = ApiSportyPostRequestFilterGames("5934595441fa900b", selectedCourt.cve, selectedDate.date, selectedState.cve)
+        val token = vbrRepository.sportyToken
+
+        val obj = ApiSportyPostRequestFilterGames(token[0].token, selectedCourt.cve, selectedDate.date, selectedState.cve)
 
         VbrApi.getInstance().postSportyFilters(obj, this, object : Callback {
             override fun onFailure(call: Call, e: IOException) { call.cancel() }

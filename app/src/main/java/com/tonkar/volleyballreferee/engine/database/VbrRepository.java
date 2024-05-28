@@ -2,6 +2,7 @@ package com.tonkar.volleyballreferee.engine.database;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tonkar.volleyballreferee.engine.api.JsonConverters;
 import com.tonkar.volleyballreferee.engine.api.model.ApiFriend;
@@ -12,6 +13,7 @@ import com.tonkar.volleyballreferee.engine.api.model.ApiLeagueSummary;
 import com.tonkar.volleyballreferee.engine.api.model.ApiRules;
 import com.tonkar.volleyballreferee.engine.api.model.ApiRulesSummary;
 import com.tonkar.volleyballreferee.engine.api.model.ApiSportyDate;
+import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostResponseFilterGames;
 import com.tonkar.volleyballreferee.engine.api.model.ApiSportyValidateCode;
 import com.tonkar.volleyballreferee.engine.api.model.ApiTeam;
 import com.tonkar.volleyballreferee.engine.api.model.ApiTeamSummary;
@@ -24,6 +26,7 @@ import com.tonkar.volleyballreferee.engine.database.model.SportyCourtEntity;
 import com.tonkar.volleyballreferee.engine.database.model.SportyDateEntity;
 import com.tonkar.volleyballreferee.engine.database.model.SportyGameEntity;
 import com.tonkar.volleyballreferee.engine.database.model.SportyStateEntity;
+import com.tonkar.volleyballreferee.engine.database.model.SportyTokenEntity;
 import com.tonkar.volleyballreferee.engine.database.model.TeamEntity;
 import com.tonkar.volleyballreferee.engine.game.BaseGame;
 import com.tonkar.volleyballreferee.engine.game.GameType;
@@ -51,6 +54,7 @@ public class VbrRepository {
     private final SportyDateDao  mSportyDateDao;
     private final SportyStateDao mSportyStateDao;
     private final SportyGameDao  mSportyGameDao;
+    private final SportyTokenDao mSportyTokenDao;
 
     public VbrRepository (Context context) {
         VbrDatabase db = VbrDatabase.getInstance(context);
@@ -64,6 +68,7 @@ public class VbrRepository {
         mSportyDateDao = db.sportyDateDao();
         mSportyStateDao = db.sportyStateDao();
         mSportyGameDao = db.sportyGameDao();
+        mSportyTokenDao = db.sportyTokenDao();
     }
 
     public void insertFriend(final String friendId, final String friendPseudo, boolean syncInsertion) {
@@ -394,16 +399,18 @@ public class VbrRepository {
     }
 
     // Sporty games
+    public ApiSportyPostResponseFilterGames.JuegosData getFirstSportyGame () {
+        List<SportyGameEntity> gameList = mSportyGameDao.gameList();
+        SportyGameEntity game = gameList.get(0);
+        return new Gson().fromJson(game.getContent(), ApiSportyPostResponseFilterGames.JuegosData.class);
+    }
+
     public List<SportyGameEntity> listSportyGames () {
         return mSportyGameDao.gameList();
     }
 
     public void insertSportyGame (SportyGameEntity game) {
         mSportyGameDao.insert(game);
-    }
-
-    public void insertAllSportyGames (List<SportyGameEntity> gameList) {
-        mSportyGameDao.insertAll(gameList);
     }
 
     public void deleteAllSportyGames () {
@@ -462,6 +469,18 @@ public class VbrRepository {
 
     public void deleteAllStates () {
         mSportyStateDao.deleteAll();
+    }
+
+    public void insertSportyToken (SportyTokenEntity data) {
+        mSportyTokenDao.insert(data);
+    }
+
+    public List<SportyTokenEntity> getSportyToken () {
+       return mSportyTokenDao.tokenList();
+    }
+
+    public void deleteSportyToken () {
+        mSportyTokenDao.deleteAll();
     }
 
 }

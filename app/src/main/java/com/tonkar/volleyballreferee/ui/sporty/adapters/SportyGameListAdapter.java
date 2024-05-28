@@ -55,12 +55,11 @@ public class SportyGameListAdapter extends RecyclerView.Adapter<SportyGameHolder
 
     public void onBindViewHolder (SportyGameHolder holder, int position) {
         List<ApiSportyValidateCode.EstadoData> stateList = vbrRepository.listStates();
-        ApiSportyPostResponseFilterGames.JuegosData game = listGames.get(position);
         holder.bind(listGames.get(position), stateList);
-        holder.itemView.setOnClickListener(v -> startIndoorGame());
+        holder.itemView.setOnClickListener(v -> startIndoorGame(position));
     }
 
-    public void startIndoorGame () {
+    public void startIndoorGame (int position) {
         Log.i(Tags.GAME_UI, "Start an indoor game");
         ApiUserSummary user = PrefUtils.getUser(context);
         IndoorGame game = GameFactory.createIndoorGame(
@@ -74,6 +73,7 @@ public class SportyGameListAdapter extends RecyclerView.Adapter<SportyGameHolder
         mStoredGamesService.saveSetupGame(game);
         Log.i(Tags.GAME_UI, "Start activity to setup game");
         final Intent intent = new Intent(context, GameSetupActivity.class);
+        intent.putExtra("sporty_game_position", position);
         context.startActivity(intent);
     }
 

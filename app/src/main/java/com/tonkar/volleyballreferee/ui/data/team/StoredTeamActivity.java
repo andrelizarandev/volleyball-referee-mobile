@@ -52,6 +52,7 @@ public class StoredTeamActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         mStoredTeamsService = new StoredTeamsManager(this);
         mTeamService = mStoredTeamsService.copyTeam(JsonConverters.GSON.fromJson(getIntent().getStringExtra("team"), ApiTeam.class));
 
@@ -61,6 +62,8 @@ public class StoredTeamActivity extends AppCompatActivity {
         String gameTypeStr = getIntent().getStringExtra("kind");
         GameType gameType = GameType.valueOf(gameTypeStr);
 
+        int idSelectedGame = getIntent().getIntExtra("idSelectedGame", 0);
+
         mCreate = getIntent().getBooleanExtra("create", true);
 
         Fragment fragment = null;
@@ -69,7 +72,7 @@ public class StoredTeamActivity extends AppCompatActivity {
             case INDOOR:
             case INDOOR_4X4:
             case SNOW:
-                fragment = TeamSetupFragment.newInstance(mTeamService.getTeamsKind(), TeamType.HOME, false);
+                fragment = TeamSetupFragment.newInstance(mTeamService.getTeamsKind(), TeamType.HOME, false, idSelectedGame);
                 break;
             case BEACH:
                 fragment = QuickTeamSetupFragment.newInstance(TeamType.HOME);

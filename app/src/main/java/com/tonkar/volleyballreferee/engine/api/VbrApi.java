@@ -17,6 +17,7 @@ import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostRequestFilterG
 import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostRequestValidateCode;
 import com.tonkar.volleyballreferee.engine.api.model.ApiRules;
 import com.tonkar.volleyballreferee.engine.api.model.ApiSet;
+import com.tonkar.volleyballreferee.engine.api.model.ApiSportyUpdateGame;
 import com.tonkar.volleyballreferee.engine.api.model.ApiTeam;
 import com.tonkar.volleyballreferee.engine.api.model.ApiUserPasswordUpdate;
 import com.tonkar.volleyballreferee.engine.api.model.ApiUserToken;
@@ -198,6 +199,16 @@ public class VbrApi {
                 .addFormDataPart("dia", data.getDia())
                 .build();
         Request request = buildSportyPostWithFormData("?action=getinfogames", requestBody);
+        getHttpClient(context).newCall(request).enqueue(callback);
+    }
+
+    public void postStartSportyGame (ApiSportyUpdateGame data, Context context, Callback callback) {
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("cve", data.getCve())
+                .addFormDataPart("content", data.getContent())
+                .build();
+        Request request = buildSportyPostWithFormData("?action=updategame", requestBody);
         getHttpClient(context).newCall(request).enqueue(callback);
     }
 

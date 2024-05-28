@@ -8,7 +8,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +23,12 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.tonkar.volleyballreferee.R;
 import com.tonkar.volleyballreferee.engine.PrefUtils;
 import com.tonkar.volleyballreferee.engine.Tags;
+import com.tonkar.volleyballreferee.engine.api.JsonConverters;
+import com.tonkar.volleyballreferee.engine.api.VbrApi;
+import com.tonkar.volleyballreferee.engine.api.model.ApiSportyUpdateGame;
+import com.tonkar.volleyballreferee.engine.api.model.ApiSportyValidateCode;
+import com.tonkar.volleyballreferee.engine.database.VbrRepository;
+import com.tonkar.volleyballreferee.engine.database.model.SportyGameEntity;
 import com.tonkar.volleyballreferee.engine.game.GameType;
 import com.tonkar.volleyballreferee.engine.game.IGame;
 import com.tonkar.volleyballreferee.engine.service.StoredGamesManager;
@@ -32,6 +40,7 @@ import com.tonkar.volleyballreferee.engine.service.StoredRulesService;
 import com.tonkar.volleyballreferee.engine.service.StoredTeamsManager;
 import com.tonkar.volleyballreferee.engine.service.StoredTeamsService;
 import com.tonkar.volleyballreferee.engine.team.TeamType;
+import com.tonkar.volleyballreferee.ui.MainActivity;
 import com.tonkar.volleyballreferee.ui.game.GameActivity;
 import com.tonkar.volleyballreferee.ui.interfaces.BaseTeamServiceHandler;
 import com.tonkar.volleyballreferee.ui.interfaces.GameServiceHandler;
@@ -40,9 +49,19 @@ import com.tonkar.volleyballreferee.ui.rules.RulesSetupFragment;
 import com.tonkar.volleyballreferee.ui.team.TeamSetupFragment;
 import com.tonkar.volleyballreferee.ui.util.UiUtils;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 public class GameSetupActivity extends AppCompatActivity {
 
     private IGame mGame;
+    private int selectedSportyGame;
+    private VbrRepository vbrRepository = new VbrRepository(this);
 
     public GameSetupActivity() {
         super();
@@ -64,6 +83,9 @@ public class GameSetupActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
+
+        selectedSportyGame = getIntent().getIntExtra("sporty_game_position", 0);
+
         StoredGamesService storedGamesService = new StoredGamesManager(this);
         mGame = storedGamesService.loadSetupGame();
 
@@ -78,9 +100,7 @@ public class GameSetupActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        if (actionBar != null) { actionBar.setDisplayHomeAsUpEnabled(true); }
 
         final BottomNavigationView gameSetupNavigation = findViewById(R.id.game_setup_nav);
         initGameSetupNavigation(gameSetupNavigation, savedInstanceState);
@@ -90,6 +110,7 @@ public class GameSetupActivity extends AppCompatActivity {
         ScrollView scrollView = findViewById(R.id.setup_scroll_view);
         ExtendedFloatingActionButton startGameButton = findViewById(R.id.start_game_button);
         UiUtils.addExtendShrinkListener(scrollView, startGameButton);
+
     }
 
     @Override
@@ -142,10 +163,10 @@ public class GameSetupActivity extends AppCompatActivity {
 
     public void startGame(View view) {
         Log.i(Tags.SETUP_UI, "Start game");
-
         final AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppTheme_Dialog);
         builder.setTitle(getString(R.string.game_setup_title)).setMessage(getString(R.string.confirm_game_setup_question));
         builder.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+            startSportyGame();
             saveTeams();
             saveRules();
             saveLeague();
@@ -163,6 +184,22 @@ public class GameSetupActivity extends AppCompatActivity {
         builder.setNegativeButton(android.R.string.no, (dialog, which) -> {});
         AlertDialog alertDialog = builder.show();
         UiUtils.setAlertDialogMessageSize(alertDialog, getResources());
+    }
+
+    private void startSportyGame () {
+        List<SportyGameEntity> gameList = vbrRepository.listSportyGames();
+        String cve = gameList.get(selectedSportyGame).getCve();
+        ApiSportyUpdateGame payload = new ApiSportyUpdateGame(cve, null);
+        VbrApi.getInstance().postStartSportyGame(payload, this, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                call.cancel();
+            }
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.code() == HttpURLConnection.HTTP_OK) {} else {}
+            }
+        });
     }
 
     private void saveTeams() {
@@ -211,9 +248,9 @@ public class GameSetupActivity extends AppCompatActivity {
             final Fragment fragment;
             int itemId = item.getItemId();
             if (itemId == R.id.home_team_tab) {
-                fragment = TeamSetupFragment.newInstance(mGame.getTeamsKind(), TeamType.HOME, true);
+                fragment = TeamSetupFragment.newInstance(mGame.getTeamsKind(), TeamType.HOME, true, selectedSportyGame);
             } else if (itemId == R.id.guest_team_tab) {
-                fragment = TeamSetupFragment.newInstance(mGame.getTeamsKind(), TeamType.GUEST, true);
+                fragment = TeamSetupFragment.newInstance(mGame.getTeamsKind(), TeamType.GUEST, true, selectedSportyGame);
             } else if (itemId == R.id.rules_tab) {
                 fragment = RulesSetupFragment.newInstance(true);
             } else if (itemId == R.id.misc_tab) {

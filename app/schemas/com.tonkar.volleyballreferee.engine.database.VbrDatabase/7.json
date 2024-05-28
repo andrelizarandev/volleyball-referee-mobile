@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 6,
-    "identityHash": "43544cf78542e0dd2142b9588ba373fe",
+    "version": 7,
+    "identityHash": "c94fd8b439febaeeef379e65264a6518",
     "entities": [
       {
         "tableName": "rules",
@@ -456,7 +456,7 @@
       },
       {
         "tableName": "sporty_games",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cve` TEXT NOT NULL, `content` TEXT, PRIMARY KEY(`cve`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cve` TEXT NOT NULL, `content` TEXT NOT NULL, PRIMARY KEY(`cve`))",
         "fields": [
           {
             "fieldPath": "cve",
@@ -468,7 +468,7 @@
             "fieldPath": "content",
             "columnName": "content",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -504,7 +504,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '43544cf78542e0dd2142b9588ba373fe')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c94fd8b439febaeeef379e65264a6518')"
     ]
   }
 }
