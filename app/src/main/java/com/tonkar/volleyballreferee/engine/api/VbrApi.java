@@ -206,7 +206,7 @@ public class VbrApi {
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("cve", data.getCve())
-                .addFormDataPart("content", data.getContent())
+                .addFormDataPart("content", "")
                 .build();
         Request request = buildSportyPostWithFormData("?action=updategame", requestBody);
         getHttpClient(context).newCall(request).enqueue(callback);

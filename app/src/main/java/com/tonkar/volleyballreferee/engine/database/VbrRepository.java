@@ -409,6 +409,12 @@ public class VbrRepository {
         return mSportyGameDao.gameList();
     }
 
+    public ApiSportyPostResponseFilterGames.JuegosData getSportyGameByIndex (int index) {
+        List<SportyGameEntity> gameList = this.listSportyGames();
+        SportyGameEntity selectedGame = gameList.get(index);
+        return new Gson().fromJson(selectedGame.getContent(), ApiSportyPostResponseFilterGames.JuegosData.class);
+    }
+
     public void insertSportyGame (SportyGameEntity game) {
         mSportyGameDao.insert(game);
     }

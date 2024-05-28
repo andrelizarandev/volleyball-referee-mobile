@@ -81,18 +81,50 @@ public class RulesSetupFragment extends Fragment implements RulesHandler {
 
     private VbrRepository mVbrRepository;
 
+    private int sportyGameIndex = -1;
+
     public RulesSetupFragment() {}
 
     public static RulesSetupFragment newInstance() {
-        return newInstance(true);
+        return newInstance(true, -1);
     }
 
-    public static RulesSetupFragment newInstance(boolean isGameContext) {
+    public static RulesSetupFragment newInstance(boolean isGameContext, int selectedSportyGame) {
         RulesSetupFragment fragment = new RulesSetupFragment();
         Bundle args = new Bundle();
         args.putBoolean("is_game", isGameContext);
+        args.putInt("sporty_game_position", selectedSportyGame);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void getSportyRules () {
+
+        ApiSportyPostResponseFilterGames.JuegosData selectedGame = mVbrRepository.getSportyGameByIndex(sportyGameIndex);
+        String sets = selectedGame.confiGame.cntSets;
+        int points = selectedGame.confiGame.pntSet;
+
+        Log.i("RULES_SETUP", "sets: " + sets + " points: " + points);
+
+        int parsedSets = switch (sets) {
+            case "1" -> 0;
+            case "2" -> 1;
+            case "3" -> 2;
+            case "4" -> 3;
+            case "5" -> 4;
+            default -> 1;
+        };
+
+        int parsedPoints = switch (points) {
+            case 25 -> 15;
+            case 20 -> 20;
+            case 15 -> 25;
+            default -> 15;
+        };
+
+        mSetsPerGameSpinner.setSelection(parsedSets);
+        mPointsPerSetSpinner.setSelection(parsedPoints);
+
     }
 
     @Override
@@ -103,6 +135,7 @@ public class RulesSetupFragment extends Fragment implements RulesHandler {
         mVbrRepository = new VbrRepository(getContext());
 
         final boolean isGameContext = getArguments().getBoolean("is_game");
+        sportyGameIndex = getArguments().getInt("sporty_game_position");
 
         switch (mRules.getKind()) {
             case BEACH:
@@ -143,7 +176,6 @@ public class RulesSetupFragment extends Fragment implements RulesHandler {
         });
 
         // General
-
         mSetsPerGameSpinner = view.findViewById(R.id.rules_sets_per_game);
         mSetsPerGameAdapter = new IntegerRuleAdapter(getContext(), inflater, getResources().getStringArray(R.array.sets_per_game_entries), getResources().getStringArray(R.array.sets_per_game_values));
         mSetsPerGameSpinner.setAdapter(mSetsPerGameAdapter);
@@ -151,9 +183,6 @@ public class RulesSetupFragment extends Fragment implements RulesHandler {
         mPointsPerSetSpinner = view.findViewById(R.id.rules_points_per_set);
         mPointsPerSetAdapter = new IntegerRuleAdapter(getContext(), inflater, getResources().getStringArray(R.array.points_per_set_entries), getResources().getStringArray(R.array.points_per_set_values));
         mPointsPerSetSpinner.setAdapter(mPointsPerSetAdapter);
-
-        // Sporty
-        getSportyGameConfig();
 
         mTieBreakSwitch = view.findViewById(R.id.rules_tie_break);
 
@@ -418,6 +447,8 @@ public class RulesSetupFragment extends Fragment implements RulesHandler {
         initValues();
 
         computeConfirmItemVisibility();
+
+        if (sportyGameIndex != -1) { getSportyRules(); }
 
         return view;
     }

@@ -47,10 +47,12 @@ public class StoredAdvancedGameActivity extends StoredGameActivity {
         initScoreSheetAvailability();
 
         final ViewPager2 storedGamePager = findViewById(R.id.stored_game_pager);
+        Log.i("STORED_ADVANCED_GAME", "Number of sets: " + mStoredGame.getNumberOfSets());
         final StoredGameFragmentStateAdapter storedGameStateAdapter = new StoredGameFragmentStateAdapter(this, mStoredGame.getNumberOfSets());
         storedGamePager.setAdapter(storedGameStateAdapter);
 
         final TabLayout storedGameTabs = findViewById(R.id.stored_game_tabs);
+
         new TabLayoutMediator(storedGameTabs, storedGamePager, (tab, position) -> {
             String tabText = position == 0 ? getString(R.string.change_player_names) : position == 1 ? getString(R.string.rules) : String.format(getString(R.string.set_number), position - 1);
             tab.setText(tabText);

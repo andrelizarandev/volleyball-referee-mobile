@@ -30,7 +30,8 @@ public class TeamsFragment extends Fragment implements StoredGameHandler {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView (@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         Log.i(Tags.STORED_GAMES, "Create teams fragment");
         View view = inflater.inflate(R.layout.fragment_teams, container, false);
 
@@ -43,6 +44,7 @@ public class TeamsFragment extends Fragment implements StoredGameHandler {
         guestTeamPlayersList.setAdapter(guestTeamPlayersListAdapter);
 
         return view;
+
     }
 
     @Override

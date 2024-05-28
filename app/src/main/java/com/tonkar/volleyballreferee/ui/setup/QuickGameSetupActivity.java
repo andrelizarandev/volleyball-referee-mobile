@@ -201,7 +201,7 @@ public class QuickGameSetupActivity extends AppCompatActivity {
                         if (GameType.TIME.equals(mGame.getKind())) {
                             fragment = null;
                         } else {
-                            fragment = RulesSetupFragment.newInstance(true);
+                            fragment = RulesSetupFragment.newInstance(true, -1);
                         }
                     } else if (itemId == R.id.misc_tab) {
                         fragment = MiscSetupFragment.newInstance();

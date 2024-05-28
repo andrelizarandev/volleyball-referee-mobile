@@ -20,7 +20,11 @@ public class StoredGameFragmentStateAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        return position == 0 ? TeamsFragment.newInstance() : position == 1 ? RulesFragment.newInstance() : SetFragment.newInstance(position - 2);
+        return position == 0
+                ? TeamsFragment.newInstance()
+                : position == 1
+                ? RulesFragment.newInstance()
+                : SetFragment.newInstance(position - 2);
     }
 
     @Override

@@ -61,7 +61,7 @@ public class GameSetupActivity extends AppCompatActivity {
 
     private IGame mGame;
     private int selectedSportyGame;
-    private VbrRepository vbrRepository = new VbrRepository(this);
+    private final VbrRepository vbrRepository = new VbrRepository(this);
 
     public GameSetupActivity() {
         super();
@@ -84,7 +84,7 @@ public class GameSetupActivity extends AppCompatActivity {
     @Override
     protected void onCreate (Bundle savedInstanceState) {
 
-        selectedSportyGame = getIntent().getIntExtra("sporty_game_position", 0);
+        selectedSportyGame = getIntent().getIntExtra("sporty_game_position", -1);
 
         StoredGamesService storedGamesService = new StoredGamesManager(this);
         mGame = storedGamesService.loadSetupGame();
@@ -189,7 +189,11 @@ public class GameSetupActivity extends AppCompatActivity {
     private void startSportyGame () {
         List<SportyGameEntity> gameList = vbrRepository.listSportyGames();
         String cve = gameList.get(selectedSportyGame).getCve();
+
+        Log.i("GAME_SETUP", "Starting sporty game with cve: " + cve);
+
         ApiSportyUpdateGame payload = new ApiSportyUpdateGame(cve, null);
+
         VbrApi.getInstance().postStartSportyGame(payload, this, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -252,7 +256,7 @@ public class GameSetupActivity extends AppCompatActivity {
             } else if (itemId == R.id.guest_team_tab) {
                 fragment = TeamSetupFragment.newInstance(mGame.getTeamsKind(), TeamType.GUEST, true, selectedSportyGame);
             } else if (itemId == R.id.rules_tab) {
-                fragment = RulesSetupFragment.newInstance(true);
+                fragment = RulesSetupFragment.newInstance(true, selectedSportyGame);
             } else if (itemId == R.id.misc_tab) {
                 fragment = MiscSetupFragment.newInstance();
             } else {

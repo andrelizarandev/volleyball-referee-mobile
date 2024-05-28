@@ -332,10 +332,12 @@ public class GameActivity extends AppCompatActivity implements GeneralListener, 
 
     private void increaseScoreWithDialog(final TeamType teamType) {
         if ((mGame.isMatchPoint() || mGame.isSetPoint()) && mGame.getLeadingTeam().equals(teamType)) {
+
             String title = mGame.isMatchPoint() ? getString(R.string.match_point) : getString(R.string.set_point);
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppTheme_Dialog);
             builder.setTitle(title).setMessage(getString(R.string.confirm_set_question));
+
             builder.setPositiveButton(android.R.string.yes, (dialog, which) -> {
                 Log.i(Tags.GAME_UI, "User accepts the set point");
                 mGame.addPoint(teamType);
@@ -364,7 +366,7 @@ public class GameActivity extends AppCompatActivity implements GeneralListener, 
         }
     }
 
-    private void showSanctionDialog(final TeamType teamType) {
+    private void showSanctionDialog (final TeamType teamType) {
         final String title = String.format(Locale.getDefault(), getString(R.string.sanction), mGame.getTeamName(teamType));
         SanctionSelectionDialogFragment sanctionSelectionDialogFragment = SanctionSelectionDialogFragment.newInstance(title, teamType);
         sanctionSelectionDialogFragment.show(getSupportFragmentManager(), "sanction_dialog");
@@ -431,6 +433,7 @@ public class GameActivity extends AppCompatActivity implements GeneralListener, 
 
     @Override
     public void onPointsUpdated(TeamType teamType, int newCount) {
+
         if (mTeamOnLeftSide.equals(teamType)) {
             mLeftTeamScoreButton.setText(UiUtils.formatNumberFromLocale(newCount));
         } else {

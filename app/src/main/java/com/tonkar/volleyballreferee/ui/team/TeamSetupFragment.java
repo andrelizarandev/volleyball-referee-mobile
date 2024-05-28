@@ -69,9 +69,7 @@ public class TeamSetupFragment extends Fragment implements BaseTeamServiceHandle
 
     // Sporty configs
     public ApiSportyPostResponseFilterGames.JuegosData getSportyGameWithIndex (int index) {
-        List<SportyGameEntity> sportyGames = mVbrRepository.listSportyGames();
-        SportyGameEntity selectedGame = sportyGames.get(index);
-        return new Gson().fromJson(selectedGame.getContent(), ApiSportyPostResponseFilterGames.JuegosData.class);
+        return mVbrRepository.getSportyGameByIndex(index);
     }
 
     public void setTeamNames (ApiSportyPostResponseFilterGames.JuegosData parsedGame) {
@@ -133,6 +131,13 @@ public class TeamSetupFragment extends Fragment implements BaseTeamServiceHandle
         }
     }
 
+    public void setRules (ApiSportyPostResponseFilterGames.JuegosData parsedGame) {
+        String sets = parsedGame.confiGame.cntSets;
+        int points = parsedGame.confiGame.pntSet;
+        Log.i("TEAM_SETUP", "Sets: " + sets + " Points: " + points);
+    }
+
+    // Other
     public static TeamSetupFragment newInstance(GameType gameType, TeamType teamType, boolean isGameContext, int selectedSportyGameIndex) {
         TeamSetupFragment fragment = new TeamSetupFragment();
         Bundle args = new Bundle();
@@ -150,11 +155,17 @@ public class TeamSetupFragment extends Fragment implements BaseTeamServiceHandle
         // Sporty
         int selectedSportyGameIndex = getArguments().getInt("sporty_game_position");
 
-        ApiSportyPostResponseFilterGames.JuegosData game = getSportyGameWithIndex(selectedSportyGameIndex);
-
-        setTeamNames(game);
-        setSportyPlayersList(game);
-        setGameGender(game);
+        if (selectedSportyGameIndex != -1) {
+            Log.e(Tags.SETUP_UI, "No game selected");
+            ApiSportyPostResponseFilterGames.JuegosData game = getSportyGameWithIndex(selectedSportyGameIndex);
+            setTeamNames(game);
+            setSportyPlayersList(game);
+            setGameGender(game);
+            setSportyCaptain(game);
+            setSportyLibero(game);
+            setPlayerNames(game);
+            setRules(game);
+        }
 
         Log.i(Tags.SETUP_UI, "Create team setup fragment");
         mLayoutInflater = inflater;
@@ -312,11 +323,6 @@ public class TeamSetupFragment extends Fragment implements BaseTeamServiceHandle
         }
 
         computeConfirmItemVisibility();
-
-        // Sporty
-        setSportyCaptain(game);
-        setSportyLibero(game);
-        setPlayerNames(game);
 
         return view;
     }

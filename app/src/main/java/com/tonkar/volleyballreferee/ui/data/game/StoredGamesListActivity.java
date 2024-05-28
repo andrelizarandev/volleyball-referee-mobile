@@ -14,6 +14,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.gson.Gson;
 import com.tonkar.volleyballreferee.R;
 import com.tonkar.volleyballreferee.engine.PrefUtils;
 import com.tonkar.volleyballreferee.engine.Tags;
@@ -21,14 +22,16 @@ import com.tonkar.volleyballreferee.engine.api.model.ApiGameSummary;
 import com.tonkar.volleyballreferee.engine.game.GameType;
 import com.tonkar.volleyballreferee.engine.game.UsageType;
 import com.tonkar.volleyballreferee.engine.service.DataSynchronizationListener;
+import com.tonkar.volleyballreferee.engine.service.IStoredGame;
 import com.tonkar.volleyballreferee.engine.service.StoredGamesManager;
 import com.tonkar.volleyballreferee.engine.service.StoredGamesService;
+import com.tonkar.volleyballreferee.engine.team.TeamType;
 import com.tonkar.volleyballreferee.ui.NavigationActivity;
 import com.tonkar.volleyballreferee.ui.util.UiUtils;
 
 import java.util.List;
 
-public class StoredGamesListActivity extends NavigationActivity implements DataSynchronizationListener {
+public class StoredGamesListActivity extends NavigationActivity  implements DataSynchronizationListener {
 
     private StoredGamesService     mStoredGamesService;
     private StoredGamesListAdapter mStoredGamesListAdapter;
@@ -46,7 +49,7 @@ public class StoredGamesListActivity extends NavigationActivity implements DataS
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Log.i(Tags.STORED_GAMES, "Create stored games list activity");
@@ -66,7 +69,23 @@ public class StoredGamesListActivity extends NavigationActivity implements DataS
         storedGamesList.setAdapter(mStoredGamesListAdapter);
 
         storedGamesList.setOnItemClickListener((parent, view, position, l) -> {
+
             ApiGameSummary game = mStoredGamesListAdapter.getItem(position);
+            mStoredGamesService = new StoredGamesManager(this);
+            IStoredGame mStoredGame = mStoredGamesService.getGame(game.getId());
+
+            // General Data
+            String parsedGame = new Gson().toJson(game);
+
+            // Players
+            mStoredGame.getPlayers(TeamType.HOME);
+            mStoredGame.getPlayers(TeamType.GUEST);
+
+            // Get sets and their points
+            mStoredGame.getSets(TeamType.HOME);
+            mStoredGame.getSets(TeamType.GUEST);
+
+
 
             if (mStoredGamesListAdapter.hasSelectedItems()) {
                 mStoredGamesListAdapter.toggleItemSelection(game.getId());
@@ -78,8 +97,10 @@ public class StoredGamesListActivity extends NavigationActivity implements DataS
 
                 if (UsageType.POINTS_SCOREBOARD.equals(game.getUsage()) || GameType.TIME.equals(game.getKind())) {
                     intent = new Intent(StoredGamesListActivity.this, StoredBasicGameActivity.class);
+                    Log.i("STORE GAMES", "basic");
                 } else {
                     intent = new Intent(StoredGamesListActivity.this, StoredAdvancedGameActivity.class);
+                    Log.i("STORE GAMES", "advanced");
                 }
 
                 intent.putExtra("game", game.getId());
