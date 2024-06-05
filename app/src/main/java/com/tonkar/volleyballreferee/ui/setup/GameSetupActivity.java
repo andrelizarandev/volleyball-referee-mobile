@@ -25,6 +25,7 @@ import com.tonkar.volleyballreferee.engine.PrefUtils;
 import com.tonkar.volleyballreferee.engine.Tags;
 import com.tonkar.volleyballreferee.engine.api.JsonConverters;
 import com.tonkar.volleyballreferee.engine.api.VbrApi;
+import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostResponseFilterGames;
 import com.tonkar.volleyballreferee.engine.api.model.ApiSportyUpdateGame;
 import com.tonkar.volleyballreferee.engine.api.model.ApiSportyValidateCode;
 import com.tonkar.volleyballreferee.engine.database.VbrRepository;
@@ -167,6 +168,7 @@ public class GameSetupActivity extends AppCompatActivity {
         builder.setTitle(getString(R.string.game_setup_title)).setMessage(getString(R.string.confirm_game_setup_question));
         builder.setPositiveButton(android.R.string.yes, (dialog, which) -> {
             startSportyGame();
+            setGameAsRunning();
             saveTeams();
             saveRules();
             saveLeague();
@@ -187,13 +189,9 @@ public class GameSetupActivity extends AppCompatActivity {
     }
 
     private void startSportyGame () {
-        List<SportyGameEntity> gameList = vbrRepository.listSportyGames();
-        String cve = gameList.get(selectedSportyGame).getCve();
-
-        Log.i("GAME_SETUP", "Starting sporty game with cve: " + cve);
-
-        ApiSportyUpdateGame payload = new ApiSportyUpdateGame(cve, null);
-
+        ApiSportyPostResponseFilterGames.JuegosData game = vbrRepository.getSportyGameByIndex(selectedSportyGame);
+        Log.i("GAME_SETUP", "Starting sporty game with cve: " + game.cve);
+        ApiSportyUpdateGame payload = new ApiSportyUpdateGame(game.cve, null);
         VbrApi.getInstance().postStartSportyGame(payload, this, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -204,6 +202,11 @@ public class GameSetupActivity extends AppCompatActivity {
                 if (response.code() == HttpURLConnection.HTTP_OK) {} else {}
             }
         });
+    }
+
+    private void setGameAsRunning () {
+        ApiSportyPostResponseFilterGames.JuegosData game = vbrRepository.getSportyGameByIndex(selectedSportyGame);
+        vbrRepository.setAsRunningSportyGame(game.cve);
     }
 
     private void saveTeams() {

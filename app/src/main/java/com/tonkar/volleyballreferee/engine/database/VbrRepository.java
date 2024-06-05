@@ -399,14 +399,12 @@ public class VbrRepository {
     }
 
     // Sporty games
-    public ApiSportyPostResponseFilterGames.JuegosData getFirstSportyGame () {
-        List<SportyGameEntity> gameList = mSportyGameDao.gameList();
-        SportyGameEntity game = gameList.get(0);
-        return new Gson().fromJson(game.getContent(), ApiSportyPostResponseFilterGames.JuegosData.class);
-    }
-
     public List<SportyGameEntity> listSportyGames () {
         return mSportyGameDao.gameList();
+    }
+
+    public List<SportyGameEntity> getRunningSportyGame () {
+        return mSportyGameDao.getRunningGame();
     }
 
     public ApiSportyPostResponseFilterGames.JuegosData getSportyGameByIndex (int index) {
@@ -421,6 +419,14 @@ public class VbrRepository {
 
     public void deleteAllSportyGames () {
         mSportyGameDao.deleteAll();
+    }
+
+    public void setAsRunningSportyGame (String cve) {
+        mSportyGameDao.setIsRunning(cve);
+    }
+
+    public void setAllAsNotRunningSportyGame () {
+        mSportyGameDao.setAllIsNotRunning();
     }
 
     // Sporty courts
@@ -477,11 +483,12 @@ public class VbrRepository {
         mSportyStateDao.deleteAll();
     }
 
+    // Sporty tokens
     public void insertSportyToken (SportyTokenEntity data) {
         mSportyTokenDao.insert(data);
     }
 
-    public List<SportyTokenEntity> getSportyToken () {
+    public List<SportyTokenEntity> getSportyTokenList() {
        return mSportyTokenDao.tokenList();
     }
 

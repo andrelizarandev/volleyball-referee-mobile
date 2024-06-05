@@ -397,5 +397,6 @@
     <string name="sporty_team_1">Equipo #1</string>
     <string name="sporty_team_2">Equipo #2</string>
     <string name="sporty_game_state">Pendiente</string>
+    <string name="sporty_signed_out">Sesión de Sporty cerrada correctamente</string>
 
 </resources>

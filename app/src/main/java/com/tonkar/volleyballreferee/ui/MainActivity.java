@@ -169,10 +169,13 @@ public class MainActivity extends NavigationActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // Sporty functions
+
     public void initSportyUi() {
         getSportyComponents();
         addSportyListeners();
         manageSportyComponents();
+        validateGotSavedSportyToken();
     }
 
     public void getSportyComponents () {
@@ -184,27 +187,33 @@ public class MainActivity extends NavigationActivity {
     public void addSportyListeners () {
         btnOpenValidateCodeDialog.setOnClickListener(v -> showCustomDialogToValidateSportyCode());
         btnSignOutSporty.setOnClickListener(v -> signOutFromSporty());
-        btnFilterGames.setOnClickListener(v -> goToFilterGames());
+        btnFilterGames.setOnClickListener(v -> goToFilterSportyGames());
     }
 
     public void manageSportyComponents () {
         btnSignOutSporty.setVisibility(View.GONE);
         btnFilterGames.setVisibility(View.GONE);
-        repository = new VbrRepository(this);
     }
 
     public void signOutFromSporty () {
         btnFilterGames.setVisibility(View.GONE);
         btnSignOutSporty.setVisibility(View.GONE);
         btnOpenValidateCodeDialog.setVisibility(View.VISIBLE);
-        UiUtils.makeText(this, "Sesión cerrada correctamente", Toast.LENGTH_LONG).show();
+        UiUtils.makeText(this, getString(R.string.sporty_signed_out), Toast.LENGTH_LONG).show();
     }
 
-    private void goToFilterGames () {
+    private void goToFilterSportyGames() {
         Intent intent = new Intent(this, SportyFilterDataActivity.class);
         startActivity(intent);
         UiUtils.animateForward(this);
     }
+
+    private void validateGotSavedSportyToken () {
+        List<SportyTokenEntity> tokenList = repository.getSportyTokenList();
+        if (!tokenList.isEmpty()) this.fetchValidateSportyCode(tokenList.get(0).token, true);
+    }
+
+    // End of Sporty functions
 
     public void resumeCurrentGame(View view) {
         Log.i(Tags.GAME_UI, "Resume game");
@@ -351,8 +360,7 @@ public class MainActivity extends NavigationActivity {
     }
 
     // Sporty, validate token to get games
-    private void fetchValidateSportyCode () {
-        String token = etSportyCode.getText().toString();
+    private void fetchValidateSportyCode (String token, Boolean isASavedToken) {
         ApiSportyPostRequestValidateCode data = new ApiSportyPostRequestValidateCode(token);
         VbrApi.getInstance().validateSportyCode(data, this, new Callback() {
             @Override
@@ -361,22 +369,29 @@ public class MainActivity extends NavigationActivity {
             }
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+
                 if (response.code() == HttpURLConnection.HTTP_OK) {
+
                     ApiSportyValidateCode resp = JsonConverters.GSON.fromJson(response.body().string(), ApiSportyValidateCode.class);
-                    if (resp.getCanchas() == null) {
-                        MainActivity.this.runOnUiThread(() -> UiUtils.makeErrorText(MainActivity.this, getString(R.string.sporty_wrong_token), Toast.LENGTH_LONG).show());
-                    } else {
-                        saveTokenData(resp, token);
-                        MainActivity.this.runOnUiThread(() -> {
-                            validateSportyTokenDialog.dismiss();
-                            UiUtils.makeText(MainActivity.this, getString(R.string.sporty_right_token), Toast.LENGTH_LONG).show();
-                            btnFilterGames.setVisibility(View.VISIBLE);
-                            btnSignOutSporty.setVisibility(View.VISIBLE);
-                            btnOpenValidateCodeDialog.setVisibility(View.GONE);
-                        });
-                    }
+
+                    saveTokenData(resp, token);
+
+                    MainActivity.this.runOnUiThread(() -> {
+                        if (!isASavedToken) { validateSportyTokenDialog.dismiss(); }
+                        UiUtils.makeText(MainActivity.this, getString(R.string.sporty_right_token), Toast.LENGTH_LONG).show();
+                        btnFilterGames.setVisibility(View.VISIBLE);
+                        btnSignOutSporty.setVisibility(View.VISIBLE);
+                        btnOpenValidateCodeDialog.setVisibility(View.GONE);
+                    });
+
+                } else if (response.code() == HttpURLConnection.HTTP_BAD_METHOD) {
+
+                    repository.deleteSportyToken();
+                    UiUtils.makeText(MainActivity.this, getString(R.string.sporty_wrong_token), Toast.LENGTH_LONG).show();
+
                 }
             }
+
         });
     }
 
@@ -431,7 +446,9 @@ public class MainActivity extends NavigationActivity {
         etSportyCode.setText("5934595441fa900b");
 
         // Listeners
-        btnSportyValidateCode.setOnClickListener(v -> this.fetchValidateSportyCode());
+        String token = etSportyCode.getText().toString();
+
+        btnSportyValidateCode.setOnClickListener(v -> this.fetchValidateSportyCode(token, false));
 
         validateSportyTokenDialog.show();
 

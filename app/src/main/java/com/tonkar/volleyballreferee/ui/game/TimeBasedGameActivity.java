@@ -282,7 +282,6 @@ public class TimeBasedGameActivity extends AppCompatActivity implements GeneralL
         UiUtils.colorTeamButton(this, mGameService.getTeamColor(mTeamOnLeftSide), mLeftTeamScoreButton);
 
         // Right
-
         mRightTeamNameText.setText(mGameService.getTeamName(mTeamOnRightSide));
         UiUtils.colorTeamButton(this, mGameService.getTeamColor(mTeamOnRightSide), mRightTeamScoreButton);
 

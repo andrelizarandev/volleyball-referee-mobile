@@ -256,7 +256,6 @@ public class RulesSetupFragment extends Fragment implements RulesHandler {
         });
 
         // Timeouts
-
         mTeamTimeoutsSwitch = view.findViewById(R.id.rules_team_timeouts);
 
         mTeamTimeoutsPerSetSpinner = view.findViewById(R.id.rules_team_timeouts_per_set);
@@ -338,7 +337,6 @@ public class RulesSetupFragment extends Fragment implements RulesHandler {
         });
 
         // Substitutions
-
         if (!GameType.BEACH.equals(mRules.getKind())) {
             mSubstitutionsLimitationSpinner = view.findViewById(R.id.rules_substitutions_limitation);
             mSubstitutionsLimitationAdapter = new IntegerRuleAdapter(getContext(), inflater, getResources().getStringArray(R.array.substitutions_limitation_entries), getResources().getStringArray(R.array.substitutions_limitation_values));
@@ -492,31 +490,6 @@ public class RulesSetupFragment extends Fragment implements RulesHandler {
         if (GameType.INDOOR.equals(mRules.getKind()) || GameType.INDOOR_4X4.equals(mRules.getKind())) {
             mConsecutiveServesSpinner.setSelection(mConsecutiveServesAdapter.getPosition(mRules.getCustomConsecutiveServesPerPlayer()));
         }
-    }
-
-    // Sporty configs
-    private void getSportyGameConfig () {
-        ApiSportyPostResponseFilterGames.JuegosData parsedGame = mVbrRepository.getFirstSportyGame();
-        int sets = getSetIndexByValue(parsedGame.confiGame.cntSets);
-        int points = getPointsIndexByValue(parsedGame.confiGame.pntSet);
-        mSetsPerGameSpinner.setSelection(sets);
-        mPointsPerSetSpinner.setSelection(points);
-    }
-
-    private int getSetIndexByValue (String sets) {
-        return switch (sets) {
-            case "1" -> 0;
-            case "3" -> 1;
-            default -> 2;
-        };
-    }
-
-    private int getPointsIndexByValue (int points) {
-        return switch (points) {
-            case 15 -> 0;
-            case 21 -> 1;
-            default -> 2;
-        };
     }
 
     private void computeConfirmItemVisibility() {

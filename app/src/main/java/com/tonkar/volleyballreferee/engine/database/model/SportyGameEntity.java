@@ -15,10 +15,13 @@ public class SportyGameEntity {
     private String cve;
     @NonNull
     private String content;
+    @NonNull
+    private int isRunning;
 
-    public SportyGameEntity (String cve, String content) {
+    public SportyGameEntity (String cve, String content, int isRunning) {
         this.cve = cve;
         this.content = content;
+        this.isRunning = isRunning;
     }
 
 

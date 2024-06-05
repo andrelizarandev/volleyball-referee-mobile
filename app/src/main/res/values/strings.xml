@@ -523,5 +523,6 @@
         <item>#ffffff</item>
         <item>#0d1017</item>
     </string-array>
+    <string name="sporty_signed_out">Signed out from Sporty</string>
 
 </resources>

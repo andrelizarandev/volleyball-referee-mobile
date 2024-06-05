@@ -157,7 +157,7 @@ public abstract class VbrDatabase extends RoomDatabase {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             // Sporty
-            database.execSQL("CREATE TABLE IF NOT EXISTS `sporty_games` (`content` TEXT NOT NULL, `cve` TEXT NOT NULL, PRIMARY KEY(`cve`))");
+            database.execSQL("CREATE TABLE IF NOT EXISTS `sporty_games` (`content` TEXT NOT NULL, `cve` TEXT NOT NULL, `isRunning` INTEGER NOT NULL, PRIMARY KEY(`cve`))");
         }
     };
 

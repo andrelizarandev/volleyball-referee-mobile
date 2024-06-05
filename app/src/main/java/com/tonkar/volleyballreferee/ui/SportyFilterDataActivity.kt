@@ -111,7 +111,7 @@ class SportyFilterDataActivity : AppCompatActivity() {
         val statesList = vbrRepository.listStates()
         val selectedState = statesList[state]
 
-        val token = vbrRepository.sportyToken
+        val token = vbrRepository.sportyTokenList
 
         val obj = ApiSportyPostRequestFilterGames(token[0].token, selectedCourt.cve, selectedDate.date, selectedState.cve)
 
@@ -124,7 +124,7 @@ class SportyFilterDataActivity : AppCompatActivity() {
                     vbrRepository.deleteAllSportyGames()
                     for (game in resp.juegos) {
                         val parsedContent = Gson().toJson(game)
-                        val entity = SportyGameEntity(game.cve, parsedContent)
+                        val entity = SportyGameEntity(game.cve, parsedContent, 0)
                         vbrRepository.insertSportyGame(entity)
                     }
                     val intent = Intent(this@SportyFilterDataActivity, ListSportyGamesActivity::class.java)

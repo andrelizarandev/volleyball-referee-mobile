@@ -400,5 +400,6 @@
     <string name="sporty_team_1">-</string>
     <string name="sporty_team_2">-</string>
     <string name="sporty_game_state">-</string>
+    <string name="sporty_signed_out">-</string>
 
 </resources>

@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityOptionsCompat;
@@ -18,7 +19,12 @@ import com.google.gson.Gson;
 import com.tonkar.volleyballreferee.R;
 import com.tonkar.volleyballreferee.engine.PrefUtils;
 import com.tonkar.volleyballreferee.engine.Tags;
+import com.tonkar.volleyballreferee.engine.api.VbrApi;
 import com.tonkar.volleyballreferee.engine.api.model.ApiGameSummary;
+import com.tonkar.volleyballreferee.engine.api.model.ApiPlayer;
+import com.tonkar.volleyballreferee.engine.api.model.ApiSportyUpdateGame;
+import com.tonkar.volleyballreferee.engine.database.VbrRepository;
+import com.tonkar.volleyballreferee.engine.database.model.SportyGameEntity;
 import com.tonkar.volleyballreferee.engine.game.GameType;
 import com.tonkar.volleyballreferee.engine.game.UsageType;
 import com.tonkar.volleyballreferee.engine.service.DataSynchronizationListener;
@@ -29,7 +35,14 @@ import com.tonkar.volleyballreferee.engine.team.TeamType;
 import com.tonkar.volleyballreferee.ui.NavigationActivity;
 import com.tonkar.volleyballreferee.ui.util.UiUtils;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.List;
+import java.util.Set;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class StoredGamesListActivity extends NavigationActivity  implements DataSynchronizationListener {
 
@@ -37,6 +50,7 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
     private StoredGamesListAdapter mStoredGamesListAdapter;
     private SwipeRefreshLayout     mSyncLayout;
     private MenuItem               mDeleteSelectedGamesItem;
+    private VbrRepository          vbrRepository;
 
     @Override
     protected String getToolbarTitle() {
@@ -60,37 +74,27 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
         mSyncLayout = findViewById(R.id.stored_games_sync_layout);
         mSyncLayout.setOnRefreshListener(this::updateStoredGamesList);
 
+        vbrRepository = new VbrRepository(this);
         mStoredGamesService = new StoredGamesManager(this);
 
         List<ApiGameSummary> games = mStoredGamesService.listGames();
 
         final ListView storedGamesList = findViewById(R.id.stored_games_list);
+        mStoredGamesService = new StoredGamesManager(this);
         mStoredGamesListAdapter = new StoredGamesListAdapter(this, getLayoutInflater(), games);
         storedGamesList.setAdapter(mStoredGamesListAdapter);
 
         storedGamesList.setOnItemClickListener((parent, view, position, l) -> {
 
             ApiGameSummary game = mStoredGamesListAdapter.getItem(position);
-            mStoredGamesService = new StoredGamesManager(this);
-            IStoredGame mStoredGame = mStoredGamesService.getGame(game.getId());
-
-            // General Data
-            String parsedGame = new Gson().toJson(game);
-
-            // Players
-            mStoredGame.getPlayers(TeamType.HOME);
-            mStoredGame.getPlayers(TeamType.GUEST);
-
-            // Get sets and their points
-            mStoredGame.getSets(TeamType.HOME);
-            mStoredGame.getSets(TeamType.GUEST);
-
-
 
             if (mStoredGamesListAdapter.hasSelectedItems()) {
+
                 mStoredGamesListAdapter.toggleItemSelection(game.getId());
                 mDeleteSelectedGamesItem.setVisible(mStoredGamesListAdapter.hasSelectedItems());
+
             } else {
+
                 Log.i(Tags.STORED_GAMES, String.format("Start activity to display stored game %s", game.getId()));
 
                 final Intent intent;
@@ -105,6 +109,7 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
 
                 intent.putExtra("game", game.getId());
                 startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this, view, "listItemToDetails").toBundle());
+
             }
         });
 
@@ -116,6 +121,9 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
         });
 
         updateStoredGamesList();
+
+        setupFinishedSportyGame();
+
     }
 
     @Override
@@ -212,4 +220,73 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
             mSyncLayout.setRefreshing(false);
         });
     }
+
+    private void setupFinishedSportyGame() {
+        List<SportyGameEntity> startedGames = vbrRepository.getRunningSportyGame();
+        Log.i("SPORTY STORED GAMES", "startedGames.size() = " + startedGames.size());
+        if (!startedGames.isEmpty()) sendFinishedSportyGame(0, startedGames.get(0).getCve());
+    }
+
+    private void sendFinishedSportyGame (int position, String cve) {
+
+        ApiGameSummary game = mStoredGamesListAdapter.getItem(position);
+        IStoredGame mStoredGame = mStoredGamesService.getGame(game.getId());
+
+        // Players
+        Set<ApiPlayer> homePlayerList = mStoredGame.getPlayers(TeamType.HOME);
+        Set<ApiPlayer> guestPlayerList = mStoredGame.getPlayers(TeamType.GUEST);
+
+        // Get sets and their points
+        int homeSets = mStoredGame.getSets(TeamType.HOME);
+        int guestSets = mStoredGame.getSets(TeamType.GUEST);
+
+        SportyResume sportyResume = new SportyResume(game, homePlayerList, guestPlayerList, homeSets, guestSets);
+
+        String json = new Gson().toJson(sportyResume);
+
+        ApiSportyUpdateGame payload = new ApiSportyUpdateGame(cve, json);
+
+        VbrApi.getInstance().postStartSportyGame(payload, this, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                call.cancel();
+                Log.i("SPORTY STORED GAMES", "Error sending finished game");
+            }
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.code() == HttpURLConnection.HTTP_OK) {
+                    Log.i("SPORTY STORED GAMES", "Finished game sent");
+                    cleanCurrentRunningGame();
+                } else {
+                    Log.i("SPORTY STORED GAMES", "Error sending finished game");
+                }
+            }
+        });
+
+    }
+
+    private void cleanCurrentRunningGame() {
+        vbrRepository.setAllAsNotRunningSportyGame();
+    }
+
+    static class SportyResume {
+
+        private ApiGameSummary generalData;
+        private Set<ApiPlayer> homePlayerList;
+        private Set<ApiPlayer> guestPlayerList;
+        private int homeSets;
+        private int guestSets;
+
+        public SportyResume (ApiGameSummary generalData, Set<ApiPlayer> homePlayerList, Set<ApiPlayer> guestPlayerList, int homeSets, int guestSets) {
+            this.generalData = generalData;
+            this.homePlayerList = homePlayerList;
+            this.guestPlayerList = guestPlayerList;
+            this.homeSets = homeSets;
+            this.guestSets = guestSets;
+        }
+
+
+    }
+
 }
+

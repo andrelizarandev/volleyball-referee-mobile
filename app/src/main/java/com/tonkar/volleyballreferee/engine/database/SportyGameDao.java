@@ -30,4 +30,13 @@ public interface SportyGameDao {
     @Query("SELECT COUNT(*) FROM sporty_games")
     int count();
 
+    @Query("UPDATE sporty_games SET isRunning = 1 WHERE cve = :cve")
+    void setIsRunning(String cve);
+
+    @Query("UPDATE sporty_games SET isRunning = 0")
+    void setAllIsNotRunning();
+
+    @Query("SELECT * FROM sporty_games WHERE isRunning = 1")
+    List<SportyGameEntity> getRunningGame();
+
 }
