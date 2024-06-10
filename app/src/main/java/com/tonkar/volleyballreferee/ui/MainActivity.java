@@ -361,7 +361,9 @@ public class MainActivity extends NavigationActivity {
 
     // Sporty, validate token to get games
     private void fetchValidateSportyCode (String token, Boolean isASavedToken) {
+
         ApiSportyPostRequestValidateCode data = new ApiSportyPostRequestValidateCode(token);
+
         VbrApi.getInstance().validateSportyCode(data, this, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -370,11 +372,21 @@ public class MainActivity extends NavigationActivity {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
 
-                if (response.code() == HttpURLConnection.HTTP_OK) {
+                ApiSportyValidateCode resp1 = JsonConverters.GSON.fromJson(response.body().string(), ApiSportyValidateCode.class);
 
-                    ApiSportyValidateCode resp = JsonConverters.GSON.fromJson(response.body().string(), ApiSportyValidateCode.class);
+                if (resp1.getCanchas() == null) {
 
-                    saveTokenData(resp, token);
+                    repository.deleteSportyToken();
+
+                    MainActivity.this.runOnUiThread(() -> {
+
+                        UiUtils.makeText(MainActivity.this, getString(R.string.sporty_wrong_token), Toast.LENGTH_LONG).show();
+
+                    });
+                    
+                } else {
+
+                    saveTokenData(resp1, token);
 
                     MainActivity.this.runOnUiThread(() -> {
                         if (!isASavedToken) { validateSportyTokenDialog.dismiss(); }
@@ -383,11 +395,6 @@ public class MainActivity extends NavigationActivity {
                         btnSignOutSporty.setVisibility(View.VISIBLE);
                         btnOpenValidateCodeDialog.setVisibility(View.GONE);
                     });
-
-                } else if (response.code() == HttpURLConnection.HTTP_BAD_METHOD) {
-
-                    repository.deleteSportyToken();
-                    UiUtils.makeText(MainActivity.this, getString(R.string.sporty_wrong_token), Toast.LENGTH_LONG).show();
 
                 }
             }
@@ -443,7 +450,7 @@ public class MainActivity extends NavigationActivity {
         etSportyCode = customDialog.findViewById(R.id.sporty_et_code);
         btnSportyValidateCode = customDialog.findViewById(R.id.sporty_btn_code);
 
-        etSportyCode.setText("5934595441fa900b");
+        etSportyCode.setText("03a3dc9120cb3a3e");
 
         // Listeners
         String token = etSportyCode.getText().toString();
