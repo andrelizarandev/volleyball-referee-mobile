@@ -25,6 +25,7 @@ import com.tonkar.volleyballreferee.engine.api.model.ApiTeam;
 import com.tonkar.volleyballreferee.engine.api.model.ApiTimeout;
 import com.tonkar.volleyballreferee.engine.api.model.ApiUserSummary;
 import com.tonkar.volleyballreferee.engine.database.VbrRepository;
+import com.tonkar.volleyballreferee.engine.database.model.SportyGameEntity;
 import com.tonkar.volleyballreferee.engine.game.ActionOriginType;
 import com.tonkar.volleyballreferee.engine.game.GameStatus;
 import com.tonkar.volleyballreferee.engine.game.GameType;
@@ -306,14 +307,23 @@ public class StoredGamesManager implements StoredGamesService, GeneralListener, 
         pushCurrentGameToServer();
     }
 
+    private String getCurrentSportyGame () {
+        List<SportyGameEntity> sportyGames = mRepository.getRunningSportyGame();
+        String result = (!sportyGames.isEmpty()) ? sportyGames.get(0).getCve() : mGame.getRefereedBy();
+        Log.i(Tags.STORED_GAMES, "Current sporty game: " + result);
+        return result;
+    }
+
     private void createCurrentGame() {
+
+        String result = getCurrentSportyGame();
         mStoredGame = new StoredGame();
         mStoredGame.setId(mGame.getId());
         mStoredGame.setCreatedBy(mGame.getCreatedBy());
         mStoredGame.setCreatedAt(mGame.getCreatedAt());
         mStoredGame.setUpdatedAt(mGame.getUpdatedAt());
         mStoredGame.setScheduledAt(mGame.getScheduledAt());
-        mStoredGame.setRefereedBy(mGame.getRefereedBy());
+        mStoredGame.setRefereedBy(result);
         mStoredGame.setRefereeName(mGame.getRefereeName());
         mStoredGame.setReferee1Name(mGame.getReferee1Name());
         mStoredGame.setReferee2Name(mGame.getReferee2Name());
@@ -380,6 +390,9 @@ public class StoredGamesManager implements StoredGamesService, GeneralListener, 
 
     private void updateCurrentGame() {
         if (mStoredGame != null) {
+
+            String result = getCurrentSportyGame();
+            mStoredGame.setRefereedBy(result);
             mStoredGame.setUpdatedAt(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime().getTime());
             mStoredGame.setMatchStatus(mGame.isMatchCompleted() ? GameStatus.COMPLETED : GameStatus.LIVE);
             mStoredGame.setIndexed(mGame.isIndexed());

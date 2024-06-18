@@ -1,9 +1,11 @@
 package com.tonkar.volleyballreferee.engine.database;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.tonkar.volleyballreferee.engine.Tags;
 import com.tonkar.volleyballreferee.engine.api.JsonConverters;
 import com.tonkar.volleyballreferee.engine.api.model.ApiFriend;
 import com.tonkar.volleyballreferee.engine.api.model.ApiGame;
@@ -292,7 +294,15 @@ public class VbrRepository {
         return mGameDao.isGameIndexed(id);
     }
 
-    public void insertGame(final ApiGame game, boolean synced, boolean syncInsertion) {
+    private String getCurrentSportyGame (final ApiGame game) {
+        List<SportyGameEntity> sportyGames = this.getRunningSportyGame();
+        return (!sportyGames.isEmpty()) ? sportyGames.get(0).getCve() :game.getRefereedBy();
+    }
+
+    public void insertGame (final ApiGame game, boolean synced, boolean syncInsertion) {
+
+        String result = getCurrentSportyGame(game);
+
         Runnable runnable = () -> {
             game.setScore(game.buildScore());
             GameEntity gameEntity = new GameEntity();
@@ -301,7 +311,7 @@ public class VbrRepository {
             gameEntity.setCreatedAt(game.getCreatedAt());
             gameEntity.setUpdatedAt(game.getUpdatedAt());
             gameEntity.setScheduledAt(game.getScheduledAt());
-            gameEntity.setRefereedBy(game.getRefereedBy());
+            gameEntity.setRefereedBy(result);
             gameEntity.setRefereeName(game.getRefereeName());
             gameEntity.setReferee1Name(game.getReferee1Name());
             gameEntity.setReferee2Name(game.getReferee2Name());
