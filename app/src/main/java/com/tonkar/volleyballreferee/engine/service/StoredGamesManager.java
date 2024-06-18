@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
@@ -20,6 +21,7 @@ import com.tonkar.volleyballreferee.engine.api.model.ApiPlayer;
 import com.tonkar.volleyballreferee.engine.api.model.ApiSanction;
 import com.tonkar.volleyballreferee.engine.api.model.ApiSelectedLeague;
 import com.tonkar.volleyballreferee.engine.api.model.ApiSet;
+import com.tonkar.volleyballreferee.engine.api.model.ApiSportyUpdateGame;
 import com.tonkar.volleyballreferee.engine.api.model.ApiSubstitution;
 import com.tonkar.volleyballreferee.engine.api.model.ApiTeam;
 import com.tonkar.volleyballreferee.engine.api.model.ApiTimeout;
@@ -309,9 +311,7 @@ public class StoredGamesManager implements StoredGamesService, GeneralListener, 
 
     private String getCurrentSportyGame () {
         List<SportyGameEntity> sportyGames = mRepository.getRunningSportyGame();
-        String result = (!sportyGames.isEmpty()) ? sportyGames.get(0).getCve() : mGame.getRefereedBy();
-        Log.i(Tags.STORED_GAMES, "Current sporty game: " + result);
-        return result;
+        return (!sportyGames.isEmpty()) ? sportyGames.get(0).getCve() : null;
     }
 
     private void createCurrentGame() {
@@ -323,7 +323,7 @@ public class StoredGamesManager implements StoredGamesService, GeneralListener, 
         mStoredGame.setCreatedAt(mGame.getCreatedAt());
         mStoredGame.setUpdatedAt(mGame.getUpdatedAt());
         mStoredGame.setScheduledAt(mGame.getScheduledAt());
-        mStoredGame.setRefereedBy(result);
+        mStoredGame.setRefereedBy(mGame.getRefereedBy());
         mStoredGame.setRefereeName(mGame.getRefereeName());
         mStoredGame.setReferee1Name(mGame.getReferee1Name());
         mStoredGame.setReferee2Name(mGame.getReferee2Name());
@@ -639,46 +639,34 @@ public class StoredGamesManager implements StoredGamesService, GeneralListener, 
         }
     }
 
-    private void pushGameToServer(final IStoredGame storedGame) {
-        if (PrefUtils.canSync(mContext) && storedGame != null && !GameType.TIME.equals(storedGame.getKind()) && !storedGame.getTeamId(TeamType.HOME).equals(storedGame.getTeamId(TeamType.GUEST))) {
-            ApiGame game = (ApiGame) storedGame;
+    private void pushGameToServer (final IStoredGame storedGame) {
 
-            VbrApi.getInstance().updateGame(game, mContext, new Callback() {
+        ApiGame game = (ApiGame) storedGame;
+
+        String cve = getCurrentSportyGame();
+
+        if (cve != null) {
+
+            String gameJson = new Gson().toJson(game);
+
+            ApiSportyUpdateGame updateGamePayload = new ApiSportyUpdateGame(cve, gameJson);
+
+            VbrApi.getInstance().postStartSportyGame(updateGamePayload, mContext, new Callback() {
                 @Override
-                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                public void onFailure (@NonNull Call call, @NonNull IOException e) {
                     call.cancel();
                 }
-
                 @Override
-                public void onResponse(@NonNull Call call, @NonNull Response response) {
+                public void onResponse (@NonNull Call call, @NonNull Response response) {
                     if (response.code() == HttpURLConnection.HTTP_OK) {
-                        if (GameStatus.COMPLETED.equals(game.getStatus())) {
-                            mRepository.insertGame(game, true, false);
-                        }
-                    } else if (response.code() == HttpURLConnection.HTTP_NOT_FOUND) {
-                        VbrApi.getInstance().createGame(game, mContext, new Callback() {
-                            @Override
-                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                call.cancel();
-                            }
-
-                            @Override
-                            public void onResponse(@NonNull Call call, @NonNull Response response) {
-                                if (response.code() == HttpURLConnection.HTTP_CREATED) {
-                                    if (GameStatus.COMPLETED.equals(game.getStatus())) {
-                                        mRepository.insertGame(game, true, false);
-                                    }
-                                } else {
-                                    Log.e(Tags.STORED_GAMES, String.format(Locale.getDefault(), "Error %d while posting game",  response.code()));
-                                }
-                            }
-                        });
-                    } else {
-                        Log.e(Tags.STORED_GAMES, String.format(Locale.getDefault(), "Error %d while pushing game",  response.code()));
+                        mRepository.insertGame(game, true, false);
+                        Log.i(Tags.STORED_GAMES, "Game updated on server");
                     }
                 }
             });
+
         }
+
     }
 
     private synchronized void pushCurrentGameToServer() {

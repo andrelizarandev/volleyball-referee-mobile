@@ -14,7 +14,7 @@ import java.util.Set;
 @Dao
 public interface GameDao {
 
-    @Query("SELECT id, createdBy, createdAt, updatedAt, synced, scheduledAt, kind, gender, usage, public, leagueName, divisionName, homeTeamName, guestTeamName, homeSets, guestSets, score FROM games ORDER BY scheduledAt DESC")
+    @Query("SELECT id, cve, createdBy, createdAt, updatedAt, synced, scheduledAt, kind, gender, usage, public, leagueName, divisionName, homeTeamName, guestTeamName, homeSets, guestSets, score FROM games ORDER BY scheduledAt DESC")
     List<ApiGameSummary> listGames();
 
     @Query("SELECT content FROM games WHERE id = :id")

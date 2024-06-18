@@ -23,6 +23,10 @@ public class ApiGameSummary {
     @SerializedName("id")
     private String     id;
     @NonNull
+    @ColumnInfo(name = "cve")
+    @SerializedName("cve")
+    private String     cve;
+    @NonNull
     @ColumnInfo(name = "createdBy")
     @SerializedName("createdBy")
     private String     createdBy;
@@ -140,6 +144,7 @@ public class ApiGameSummary {
         referee1Name = "";
         referee2Name = "";
         scorerName = "";
+        cve = "";
     }
 
 }

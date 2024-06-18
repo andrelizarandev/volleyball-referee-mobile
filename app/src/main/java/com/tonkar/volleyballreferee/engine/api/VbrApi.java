@@ -166,13 +166,6 @@ public class VbrApi {
     }
 
     // Sporty Request Builder
-    private Request buildSportyGet (String path) {
-        return new Request.Builder()
-                .url(String.format(Locale.US, "%s/%s", VbrApi.SPORTY_ULR, path))
-                .delete()
-                .build();
-    }
-
     private Request buildSportyPostWithFormData (String path, RequestBody body) {
         return new Request.Builder()
                 .url(String.format(Locale.US, "%s/%s", VbrApi.SPORTY_ULR, path))

@@ -294,24 +294,25 @@ public class VbrRepository {
         return mGameDao.isGameIndexed(id);
     }
 
-    private String getCurrentSportyGame (final ApiGame game) {
+    private String getCurrentSportyGame () {
         List<SportyGameEntity> sportyGames = this.getRunningSportyGame();
-        return (!sportyGames.isEmpty()) ? sportyGames.get(0).getCve() :game.getRefereedBy();
+        return (!sportyGames.isEmpty()) ? sportyGames.get(0).getCve() : "null";
     }
 
     public void insertGame (final ApiGame game, boolean synced, boolean syncInsertion) {
 
-        String result = getCurrentSportyGame(game);
+        String result = getCurrentSportyGame();
 
         Runnable runnable = () -> {
             game.setScore(game.buildScore());
             GameEntity gameEntity = new GameEntity();
+            gameEntity.setCve(result);
             gameEntity.setId(game.getId());
             gameEntity.setCreatedBy(game.getCreatedBy());
             gameEntity.setCreatedAt(game.getCreatedAt());
             gameEntity.setUpdatedAt(game.getUpdatedAt());
             gameEntity.setScheduledAt(game.getScheduledAt());
-            gameEntity.setRefereedBy(result);
+            gameEntity.setRefereedBy(game.getRefereedBy());
             gameEntity.setRefereeName(game.getRefereeName());
             gameEntity.setReferee1Name(game.getReferee1Name());
             gameEntity.setReferee2Name(game.getReferee2Name());

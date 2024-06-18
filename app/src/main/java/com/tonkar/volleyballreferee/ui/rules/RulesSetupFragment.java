@@ -24,7 +24,6 @@ import com.tonkar.volleyballreferee.engine.Tags;
 import com.tonkar.volleyballreferee.engine.api.model.ApiRulesSummary;
 import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostResponseFilterGames;
 import com.tonkar.volleyballreferee.engine.database.VbrRepository;
-import com.tonkar.volleyballreferee.engine.database.model.SportyGameEntity;
 import com.tonkar.volleyballreferee.engine.game.GameType;
 import com.tonkar.volleyballreferee.engine.rules.Rules;
 import com.tonkar.volleyballreferee.engine.service.StoredRulesManager;
