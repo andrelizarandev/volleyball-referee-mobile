@@ -2,6 +2,7 @@ package com.tonkar.volleyballreferee.engine.service;
 
 import com.tonkar.volleyballreferee.engine.api.model.ApiGameSummary;
 import com.tonkar.volleyballreferee.engine.game.IGame;
+import com.tonkar.volleyballreferee.ui.data.game.OnSuccessSendFinishedGames;
 
 import java.util.List;
 import java.util.Set;
@@ -57,4 +58,7 @@ public interface StoredGamesService {
     void scheduleGame(ApiGameSummary gameDescription, boolean create, DataSynchronizationListener listener);
 
     void cancelGame(String id, DataSynchronizationListener listener);
+
+    void pushGameToServer (IStoredGame storedGame, String cve, OnSuccessSendFinishedGames onSuccessSendFinishedGames);
+
 }

@@ -37,6 +37,7 @@ public class StoredGamesListAdapter extends SelectableArrayAdapter<ApiGameSummar
         ImageView        genderItem;
         ImageView        indexedItem;
         TextView         leagueText;
+        TextView         isSyncedText;
     }
 
     private final LayoutInflater       mLayoutInflater;
@@ -83,6 +84,7 @@ public class StoredGamesListAdapter extends SelectableArrayAdapter<ApiGameSummar
 
     @Override
     public @NonNull View getView(int index, View view, @NonNull ViewGroup parent) {
+
         View gameView = view;
         ViewHolder viewHolder;
 
@@ -97,6 +99,7 @@ public class StoredGamesListAdapter extends SelectableArrayAdapter<ApiGameSummar
             viewHolder.genderItem = gameView.findViewById(R.id.game_gender_item);
             viewHolder.indexedItem = gameView.findViewById(R.id.game_indexed_item);
             viewHolder.leagueText = gameView.findViewById(R.id.stored_game_league);
+            viewHolder.isSyncedText = gameView.findViewById(R.id.is_stored_game_synced);
             gameView.setTag(viewHolder);
         }
         else {
@@ -110,6 +113,9 @@ public class StoredGamesListAdapter extends SelectableArrayAdapter<ApiGameSummar
     }
 
     private void updateGame(ViewHolder viewHolder, ApiGameSummary game) {
+
+        viewHolder.leagueText.setVisibility(View.GONE);
+
         viewHolder.summaryText.setText(String.format(Locale.getDefault(),"%s\t\t%d - %d\t\t%s",
                 game.getHomeTeamName(), game.getHomeSets(), game.getGuestSets(), game.getGuestTeamName()));
         viewHolder.dateText.setText(mFormatter.format(new Date(game.getScheduledAt())));
@@ -166,6 +172,12 @@ public class StoredGamesListAdapter extends SelectableArrayAdapter<ApiGameSummar
         viewHolder.leagueText.setVisibility(game.getLeagueName() == null || game.getLeagueName().isEmpty() ? View.GONE : View.VISIBLE);
 
         viewHolder.listItemCard.setCardBackgroundColor(ContextCompat.getColor(getContext(), isSelectedItem(game.getId()) ? R.color.colorSelectedItem : R.color.colorSurface));
+
+        viewHolder.isSyncedText.setText(game.isSynced()
+            ? getContext().getString(R.string.sporty_game_is_synced)
+            : getContext().getString(R.string.sporty_game_is_not_synced)
+        );
+
     }
 
     @Override

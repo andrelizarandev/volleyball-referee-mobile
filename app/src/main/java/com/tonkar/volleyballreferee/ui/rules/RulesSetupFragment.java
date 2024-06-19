@@ -105,29 +105,58 @@ public class RulesSetupFragment extends Fragment implements RulesHandler {
 
         Log.i("RULES_SETUP", "sets: " + sets + " points: " + points);
 
-        int parsedSets = switch (sets) {
-            case "1" -> 0;
-            case "2" -> 1;
+        int setsToWin = switch (sets) {
+            case "5" -> 0;
+            case "4" -> 1;
             case "3" -> 2;
-            case "4" -> 3;
-            case "5" -> 4;
+            case "2" -> 3;
+            case "1" -> 4;
             default -> 1;
         };
 
-        int parsedPoints = switch (points) {
+        int pointsToWin = switch (points) {
+            case 40 -> 0;
+            case 39 -> 1;
+            case 38 -> 2;
+            case 37 -> 3;
+            case 36 -> 4;
+            case 35 -> 5;
+            case 34 -> 6;
+            case 33 -> 7;
+            case 32 -> 8;
+            case 31 -> 9;
+            case 30 -> 10;
+            case 29 -> 11;
+            case 28 -> 12;
+            case 27 -> 13;
+            case 26 -> 14;
             case 25 -> 15;
+            case 24 -> 16;
+            case 23 -> 17;
+            case 22 -> 18;
+            case 21 -> 19;
             case 20 -> 20;
+            case 19 -> 21;
+            case 18 -> 22;
+            case 17 -> 23;
+            case 16 -> 24;
             case 15 -> 25;
-            default -> 15;
+            case 14 -> 26;
+            case 13 -> 27;
+            case 12 -> 28;
+            case 11 -> 29;
+            case 10 -> 30;
+            case 9 -> 31;
+            default -> 1;
         };
 
-        mSetsPerGameSpinner.setSelection(parsedSets);
-        mPointsPerSetSpinner.setSelection(parsedPoints);
+        mSetsPerGameSpinner.setSelection(setsToWin);
+        mPointsPerSetSpinner.setSelection(pointsToWin);
 
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView (@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i(Tags.RULES, "Create rules setup fragment");
         View view;
 
@@ -451,11 +480,16 @@ public class RulesSetupFragment extends Fragment implements RulesHandler {
     }
 
     private void initValues() {
+
         if (!mRules.getName().isEmpty()) {
             mRulesNameInput.setText(mRules.getName());
         }
-        mSetsPerGameSpinner.setSelection(mSetsPerGameAdapter.getPosition(mRules.getSetsPerGame()));
-        mPointsPerSetSpinner.setSelection(mPointsPerSetAdapter.getPosition(mRules.getPointsPerSet()));
+
+        if (sportyGameIndex == -1) {
+            mSetsPerGameSpinner.setSelection(mSetsPerGameAdapter.getPosition(mRules.getSetsPerGame()));
+            mPointsPerSetSpinner.setSelection(mPointsPerSetAdapter.getPosition(mRules.getPointsPerSet()));
+        } else getSportyRules();
+
         mTieBreakSwitch.setChecked(mRules.isTieBreakInLastSet());
         mPointsInTieBreakSpinner.setSelection(mPointsInTieBreakAdapter.getPosition(mRules.getPointsInTieBreak()));
         mPointsInTieBreakSpinner.setEnabled(mRules.isTieBreakInLastSet());

@@ -42,6 +42,7 @@ import com.tonkar.volleyballreferee.engine.team.IClassicTeam;
 import com.tonkar.volleyballreferee.engine.team.TeamListener;
 import com.tonkar.volleyballreferee.engine.team.TeamType;
 import com.tonkar.volleyballreferee.engine.team.player.PositionType;
+import com.tonkar.volleyballreferee.ui.data.game.OnSuccessSendFinishedGames;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -316,7 +317,6 @@ public class StoredGamesManager implements StoredGamesService, GeneralListener, 
 
     private void createCurrentGame() {
 
-        String result = getCurrentSportyGame();
         mStoredGame = new StoredGame();
         mStoredGame.setId(mGame.getId());
         mStoredGame.setCreatedBy(mGame.getCreatedBy());
@@ -639,38 +639,42 @@ public class StoredGamesManager implements StoredGamesService, GeneralListener, 
         }
     }
 
-    private void pushGameToServer (final IStoredGame storedGame) {
+    public void pushGameToServer (
+        final IStoredGame storedGame,
+        final String cve,
+        OnSuccessSendFinishedGames onSuccessSendFinishedGames
+    ) {
 
         ApiGame game = (ApiGame) storedGame;
 
-        String cve = getCurrentSportyGame();
+        String finalCve = getCurrentSportyGame();
 
-        if (cve != null) {
+        if (finalCve == null) finalCve = cve;
 
-            String gameJson = new Gson().toJson(game);
+        String gameJson = new Gson().toJson(game);
 
-            ApiSportyUpdateGame updateGamePayload = new ApiSportyUpdateGame(cve, gameJson);
+        ApiSportyUpdateGame updateGamePayload = new ApiSportyUpdateGame(finalCve, gameJson);
 
-            VbrApi.getInstance().postStartSportyGame(updateGamePayload, mContext, new Callback() {
-                @Override
-                public void onFailure (@NonNull Call call, @NonNull IOException e) {
-                    call.cancel();
+        Log.i(Tags.STORED_GAMES, "Pushing game to server 2");
+
+        VbrApi.getInstance().postStartSportyGame(updateGamePayload, mContext, new Callback() {
+            @Override
+            public void onFailure (@NonNull Call call, @NonNull IOException e) {
+                call.cancel();
+            }
+            @Override
+            public void onResponse (@NonNull Call call, @NonNull Response response) {
+                if (response.code() == HttpURLConnection.HTTP_OK) {
+                    mRepository.insertGame(game, true, false);
+                    if (onSuccessSendFinishedGames != null) onSuccessSendFinishedGames.onSuccess();
                 }
-                @Override
-                public void onResponse (@NonNull Call call, @NonNull Response response) {
-                    if (response.code() == HttpURLConnection.HTTP_OK) {
-                        mRepository.insertGame(game, true, false);
-                        Log.i(Tags.STORED_GAMES, "Game updated on server");
-                    }
-                }
-            });
-
-        }
+            }
+        });
 
     }
 
     private synchronized void pushCurrentGameToServer() {
-        pushGameToServer(mStoredGame);
+        pushGameToServer(mStoredGame, "null", null);
     }
 
     private synchronized void pushCurrentSetToServer() {
@@ -806,7 +810,7 @@ public class StoredGamesManager implements StoredGamesService, GeneralListener, 
                         remoteGamesToDownload.add(remoteGame);
                     } else if (localGame.getUpdatedAt() > remoteGame.getUpdatedAt()) {
                         StoredGame game = (StoredGame) getGame(localGame.getId());
-                        pushGameToServer(game);
+                        pushGameToServer(game, "null", null);
                     }
                 }
             }
@@ -818,7 +822,7 @@ public class StoredGamesManager implements StoredGamesService, GeneralListener, 
                 } else {
                     // if the game was not synced, then it is missing from the server because sending it must have failed, so send it again
                     StoredGame game = (StoredGame) getGame(localGame.getId());
-                    pushGameToServer(game);
+                    pushGameToServer(game, "null", null);
                 }
             }
         }

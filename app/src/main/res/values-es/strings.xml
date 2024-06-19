@@ -398,5 +398,9 @@
     <string name="sporty_team_2">Equipo #2</string>
     <string name="sporty_game_state">Pendiente</string>
     <string name="sporty_signed_out">Sesión de Sporty cerrada correctamente</string>
+    <string name="sporty_game_is_synced">Juego sincronizado</string>
+    <string name="sporty_game_is_not_synced">Juego no sincronizado</string>
+    <string name="sporty_send_no_synced_games">Enviar juegos no sincronizados</string>
+    <string name="sporty_games_synced">Juegos sincronizados</string>
 
 </resources>

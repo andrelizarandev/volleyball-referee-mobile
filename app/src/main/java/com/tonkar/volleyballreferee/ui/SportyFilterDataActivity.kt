@@ -18,6 +18,7 @@ import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostRequestFilterG
 import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostResponseFilterGames
 import com.tonkar.volleyballreferee.engine.database.VbrRepository
 import com.tonkar.volleyballreferee.engine.database.model.SportyGameEntity
+import com.tonkar.volleyballreferee.engine.sporty.helpers.DateHelper
 import com.tonkar.volleyballreferee.engine.sporty.parsers.SportyCourseParser
 import com.tonkar.volleyballreferee.engine.sporty.parsers.SportyDateParser
 import com.tonkar.volleyballreferee.engine.sporty.parsers.SportyStateParser
@@ -105,7 +106,7 @@ class SportyFilterDataActivity : AppCompatActivity() {
 
         val date = dateSpinner.selectedItem as Int
         val datesList = vbrRepository.listDates()
-        val selectedDate = datesList[date]
+        val selectedDate = DateHelper.formatDateFromDMYtoYMD(datesList[date].date);
 
         val state = stateSpinner.selectedItem as Int
         val statesList = vbrRepository.listStates()
@@ -113,7 +114,7 @@ class SportyFilterDataActivity : AppCompatActivity() {
 
         val token = vbrRepository.sportyTokenList
 
-        val obj = ApiSportyPostRequestFilterGames(token[0].token, selectedCourt.cve, selectedDate.date, selectedState.cve)
+        val obj = ApiSportyPostRequestFilterGames(token[0].token, selectedCourt.cve, selectedDate, selectedState.cve)
 
         VbrApi.getInstance().postSportyFilters(obj, this, object : Callback {
             override fun onFailure(call: Call, e: IOException) { call.cancel() }

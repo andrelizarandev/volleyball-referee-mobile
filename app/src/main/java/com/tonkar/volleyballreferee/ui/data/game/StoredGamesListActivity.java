@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -51,6 +52,7 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
     private SwipeRefreshLayout     mSyncLayout;
     private MenuItem               mDeleteSelectedGamesItem;
     private VbrRepository          vbrRepository;
+    private Button                 sendNoSynchronizedGamesButton;
 
     @Override
     protected String getToolbarTitle() {
@@ -73,6 +75,7 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
 
         mSyncLayout = findViewById(R.id.stored_games_sync_layout);
         mSyncLayout.setOnRefreshListener(this::updateStoredGamesList);
+        sendNoSynchronizedGamesButton = findViewById(R.id.sporty_send_no_synchronized_games_button);
 
         vbrRepository = new VbrRepository(this);
         mStoredGamesService = new StoredGamesManager(this);
@@ -80,7 +83,7 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
         List<ApiGameSummary> games = mStoredGamesService.listGames();
 
         final ListView storedGamesList = findViewById(R.id.stored_games_list);
-        mStoredGamesService = new StoredGamesManager(this);
+
         mStoredGamesListAdapter = new StoredGamesListAdapter(this, getLayoutInflater(), games);
         storedGamesList.setAdapter(mStoredGamesListAdapter);
 
@@ -120,14 +123,37 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
             return true;
         });
 
+        sendNoSynchronizedGamesButton.setOnClickListener(v -> {
+            for (ApiGameSummary game : games) {
+                if (!game.isSynced() && !game.getCve().equals("null")) {
+                    IStoredGame storedGame = mStoredGamesService.getGame(game.getId());
+                    mStoredGamesService.pushGameToServer(storedGame, game.getCve(), () -> runOnUiThread(() -> {
+                        UiUtils.makeText(StoredGamesListActivity.this, StoredGamesListActivity.this.getString(R.string.sporty_games_synced), Toast.LENGTH_LONG).show();
+                        updateAdapter();
+                    }));
+                }
+            }
+        });
+
         updateStoredGamesList();
 
         setupFinishedSportyGame();
 
     }
 
+    private void updateAdapter () {
+        try {
+            Thread.sleep(5000);
+            List<ApiGameSummary> games = mStoredGamesService.listGames();
+            mStoredGamesListAdapter.updateStoredGamesList(games);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_stored_games, menu);
 

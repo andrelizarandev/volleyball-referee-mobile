@@ -302,10 +302,10 @@ public class VbrRepository {
     public void insertGame (final ApiGame game, boolean synced, boolean syncInsertion) {
 
         String result = getCurrentSportyGame();
+        GameEntity gameEntity = new GameEntity();
 
         Runnable runnable = () -> {
             game.setScore(game.buildScore());
-            GameEntity gameEntity = new GameEntity();
             gameEntity.setCve(result);
             gameEntity.setId(game.getId());
             gameEntity.setCreatedBy(game.getCreatedBy());
@@ -343,6 +343,7 @@ public class VbrRepository {
         } else {
             VbrDatabase.sDatabaseWriteExecutor.execute(runnable);
         }
+
     }
 
     public void deleteGame(String id) {

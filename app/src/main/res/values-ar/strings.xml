@@ -401,5 +401,9 @@
     <string name="sporty_team_2">-</string>
     <string name="sporty_game_state">-</string>
     <string name="sporty_signed_out">-</string>
+    <string name="sporty_game_is_synced">-</string>
+    <string name="sporty_game_is_not_synced">-</string>
+    <string name="sporty_send_no_synced_games">-</string>
+    <string name="sporty_games_synced">-</string>
 
 </resources>

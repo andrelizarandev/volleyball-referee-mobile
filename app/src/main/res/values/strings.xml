@@ -524,5 +524,9 @@
         <item>#0d1017</item>
     </string-array>
     <string name="sporty_signed_out">Signed out from Sporty</string>
+    <string name="sporty_game_is_synced">Game is synchronized</string>
+    <string name="sporty_game_is_not_synced">Game is not synchronized</string>
+    <string name="sporty_send_no_synced_games">Send no synchronized games</string>
+    <string name="sporty_games_synced">Games synced</string>
 
 </resources>

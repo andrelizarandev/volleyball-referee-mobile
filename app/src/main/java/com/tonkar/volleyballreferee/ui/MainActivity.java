@@ -147,7 +147,7 @@ public class MainActivity extends NavigationActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu (Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
 
@@ -170,7 +170,6 @@ public class MainActivity extends NavigationActivity {
     }
 
     // Sporty functions
-
     public void initSportyUi() {
         getSportyComponents();
         addSportyListeners();
@@ -214,7 +213,6 @@ public class MainActivity extends NavigationActivity {
     }
 
     // End of Sporty functions
-
     public void resumeCurrentGame(View view) {
         Log.i(Tags.GAME_UI, "Resume game");
         resumeCurrentGame();
@@ -379,9 +377,7 @@ public class MainActivity extends NavigationActivity {
                     repository.deleteSportyToken();
 
                     MainActivity.this.runOnUiThread(() -> {
-
                         UiUtils.makeText(MainActivity.this, getString(R.string.sporty_wrong_token), Toast.LENGTH_LONG).show();
-
                     });
                     
                 } else {
@@ -402,6 +398,7 @@ public class MainActivity extends NavigationActivity {
         });
     }
 
+    // Sporty
     private void saveTokenData (ApiSportyValidateCode data, String token) {
 
         String initDate = data.getEvento().getFecha_inicio();

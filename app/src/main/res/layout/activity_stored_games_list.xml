@@ -14,6 +14,13 @@
 
         <include layout="@layout/toolbar" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/sporty_send_no_synchronized_games_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/default_margin_size"
+            android:text="@string/sporty_send_no_synced_games"/>
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/stored_games_sync_layout"
             android:layout_width="match_parent"
