@@ -450,9 +450,11 @@ public class MainActivity extends NavigationActivity {
         etSportyCode.setText("03a3dc9120cb3a3e");
 
         // Listeners
-        String token = etSportyCode.getText().toString();
-
-        btnSportyValidateCode.setOnClickListener(v -> this.fetchValidateSportyCode(token, false));
+        btnSportyValidateCode.setOnClickListener(v -> {
+            String token = etSportyCode.getText().toString();
+            Log.i("SPORTY UI", token);
+            this.fetchValidateSportyCode(token, false);
+        });
 
         validateSportyTokenDialog.show();
 
