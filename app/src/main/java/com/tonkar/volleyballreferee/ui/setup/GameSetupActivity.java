@@ -167,8 +167,10 @@ public class GameSetupActivity extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppTheme_Dialog);
         builder.setTitle(getString(R.string.game_setup_title)).setMessage(getString(R.string.confirm_game_setup_question));
         builder.setPositiveButton(android.R.string.yes, (dialog, which) -> {
-            startSportyGame();
-            setGameAsRunning();
+            if (selectedSportyGame != -1) {
+                startSportyGame();
+                setGameAsRunning();
+            }
             saveTeams();
             saveRules();
             saveLeague();

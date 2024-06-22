@@ -646,32 +646,32 @@ public class StoredGamesManager implements StoredGamesService, GeneralListener, 
 
         ApiGame game = (ApiGame) storedGame;
 
-        String finalCve = getCurrentSportyGame();
+        if (cve != null && !cve.equals("null")) {
 
-        if (finalCve == null) finalCve = cve;
+            String gameJson = new Gson().toJson(game);
 
-        String gameJson = new Gson().toJson(game);
+            ApiSportyUpdateGame updateGamePayload = new ApiSportyUpdateGame(cve, gameJson);
 
-        ApiSportyUpdateGame updateGamePayload = new ApiSportyUpdateGame(finalCve, gameJson);
-
-        VbrApi.getInstance().postStartSportyGame(updateGamePayload, mContext, new Callback() {
-            @Override
-            public void onFailure (@NonNull Call call, @NonNull IOException e) {
-                call.cancel();
-            }
-            @Override
-            public void onResponse (@NonNull Call call, @NonNull Response response) {
-                if (response.code() == HttpURLConnection.HTTP_OK) {
-                    mRepository.insertGame(game, true, false);
-                    if (onSuccessSendFinishedGames != null) onSuccessSendFinishedGames.onSuccess();
+            VbrApi.getInstance().postStartSportyGame(updateGamePayload, mContext, new Callback() {
+                @Override
+                public void onFailure (@NonNull Call call, @NonNull IOException e) {
+                    call.cancel();
                 }
-            }
-        });
+                @Override
+                public void onResponse (@NonNull Call call, @NonNull Response response) {
+                    if (response.code() == HttpURLConnection.HTTP_OK) {
+                        mRepository.insertGame(game, true, false);
+                        if (onSuccessSendFinishedGames != null) onSuccessSendFinishedGames.onSuccess();
+                    }
+                }
+            });
+
+        }
 
     }
 
     private synchronized void pushCurrentGameToServer() {
-        pushGameToServer(mStoredGame, "null", null);
+        pushGameToServer(mStoredGame, null, null);
     }
 
     private synchronized void pushCurrentSetToServer() {
@@ -807,7 +807,7 @@ public class StoredGamesManager implements StoredGamesService, GeneralListener, 
                         remoteGamesToDownload.add(remoteGame);
                     } else if (localGame.getUpdatedAt() > remoteGame.getUpdatedAt()) {
                         StoredGame game = (StoredGame) getGame(localGame.getId());
-                        pushGameToServer(game, "null", null);
+                        pushGameToServer(game, null, null);
                     }
                 }
             }
@@ -819,7 +819,7 @@ public class StoredGamesManager implements StoredGamesService, GeneralListener, 
                 } else {
                     // if the game was not synced, then it is missing from the server because sending it must have failed, so send it again
                     StoredGame game = (StoredGame) getGame(localGame.getId());
-                    pushGameToServer(game, "null", null);
+                    pushGameToServer(game, null, null);
                 }
             }
         }
