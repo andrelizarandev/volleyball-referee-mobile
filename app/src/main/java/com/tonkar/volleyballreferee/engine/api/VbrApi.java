@@ -199,6 +199,10 @@ public class VbrApi {
 
     public void postStartSportyGame (ApiSportyUpdateGame data, Context context, Callback callback) {
 
+        String json = new Gson().toJson(data, ApiSportyUpdateGame.class);
+
+        Log.i("SPORTY", json);
+
         RequestBody requestBody = (data.getContent() != null)
             ? new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)

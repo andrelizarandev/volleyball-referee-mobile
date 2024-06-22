@@ -652,8 +652,6 @@ public class StoredGamesManager implements StoredGamesService, GeneralListener, 
 
         String gameJson = new Gson().toJson(game);
 
-        System.out.println(gameJson);
-
         ApiSportyUpdateGame updateGamePayload = new ApiSportyUpdateGame(finalCve, gameJson);
 
         VbrApi.getInstance().postStartSportyGame(updateGamePayload, mContext, new Callback() {
