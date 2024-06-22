@@ -227,7 +227,6 @@ public class StoredGamesManager implements StoredGamesService, GeneralListener, 
         if (mStoredGame != null) {
             mRepository.insertGame(mStoredGame, false, true);
         }
-        pushCurrentGameToServer();
         deleteCurrentGame();
     }
 
@@ -653,9 +652,9 @@ public class StoredGamesManager implements StoredGamesService, GeneralListener, 
 
         String gameJson = new Gson().toJson(game);
 
-        ApiSportyUpdateGame updateGamePayload = new ApiSportyUpdateGame(finalCve, gameJson);
+        System.out.println(gameJson);
 
-        Log.i(Tags.STORED_GAMES, "Pushing game to server 2");
+        ApiSportyUpdateGame updateGamePayload = new ApiSportyUpdateGame(finalCve, gameJson);
 
         VbrApi.getInstance().postStartSportyGame(updateGamePayload, mContext, new Callback() {
             @Override

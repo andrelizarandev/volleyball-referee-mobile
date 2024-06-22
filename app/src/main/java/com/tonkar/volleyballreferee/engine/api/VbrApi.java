@@ -3,7 +3,9 @@ package com.tonkar.volleyballreferee.engine.api;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
+import com.google.gson.Gson;
 import com.tonkar.volleyballreferee.BuildConfig;
 import com.tonkar.volleyballreferee.engine.PrefUtils;
 import com.tonkar.volleyballreferee.engine.api.model.ApiEmailCredentials;
@@ -196,13 +198,22 @@ public class VbrApi {
     }
 
     public void postStartSportyGame (ApiSportyUpdateGame data, Context context, Callback callback) {
-        RequestBody requestBody = new MultipartBody.Builder()
+
+        RequestBody requestBody = (data.getContent() != null)
+            ? new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("cve", data.getCve())
-                .addFormDataPart("content", "null")
+                .addFormDataPart("content", data.getContent())
+                .build()
+            : new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("cve", data.getCve())
                 .build();
+
         Request request = buildSportyPostWithFormData("?action=setinfogame", requestBody);
+
         getHttpClient(context).newCall(request).enqueue(callback);
+
     }
 
     // Other

@@ -116,6 +116,8 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
             }
         });
 
+        sendNoSynchronizedGames();
+
         storedGamesList.setOnItemLongClickListener((parent, view, position, id) -> {
             ApiGameSummary game = mStoredGamesListAdapter.getItem(position);
             mStoredGamesListAdapter.toggleItemSelection(game.getId());
@@ -123,22 +125,25 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
             return true;
         });
 
-        sendNoSynchronizedGamesButton.setOnClickListener(v -> {
-            for (ApiGameSummary game : games) {
-                if (!game.isSynced() && !game.getCve().equals("null")) {
-                    IStoredGame storedGame = mStoredGamesService.getGame(game.getId());
-                    mStoredGamesService.pushGameToServer(storedGame, game.getCve(), () -> runOnUiThread(() -> {
-                        UiUtils.makeText(StoredGamesListActivity.this, StoredGamesListActivity.this.getString(R.string.sporty_games_synced), Toast.LENGTH_LONG).show();
-                        updateAdapter();
-                    }));
-                }
-            }
-        });
+        sendNoSynchronizedGamesButton.setOnClickListener(v -> sendNoSynchronizedGames());
 
         updateStoredGamesList();
 
         setupFinishedSportyGame();
 
+    }
+
+    private void sendNoSynchronizedGames() {
+        List<ApiGameSummary> games = mStoredGamesService.listGames();
+        for (ApiGameSummary game : games) {
+            if (!game.isSynced() && !game.getCve().equals("null")) {
+                IStoredGame storedGame = mStoredGamesService.getGame(game.getId());
+                mStoredGamesService.pushGameToServer(storedGame, game.getCve(), () -> runOnUiThread(() -> {
+                    UiUtils.makeText(StoredGamesListActivity.this, StoredGamesListActivity.this.getString(R.string.sporty_games_synced), Toast.LENGTH_LONG).show();
+                    updateAdapter();
+                }));
+            }
+        }
     }
 
     private void updateAdapter () {
