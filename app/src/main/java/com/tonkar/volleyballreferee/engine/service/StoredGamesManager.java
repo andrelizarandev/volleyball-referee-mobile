@@ -28,6 +28,7 @@ import com.tonkar.volleyballreferee.engine.api.model.ApiTimeout;
 import com.tonkar.volleyballreferee.engine.api.model.ApiUserSummary;
 import com.tonkar.volleyballreferee.engine.database.VbrRepository;
 import com.tonkar.volleyballreferee.engine.database.model.SportyGameEntity;
+import com.tonkar.volleyballreferee.engine.database.model.SportyTokenEntity;
 import com.tonkar.volleyballreferee.engine.game.ActionOriginType;
 import com.tonkar.volleyballreferee.engine.game.GameStatus;
 import com.tonkar.volleyballreferee.engine.game.GameType;
@@ -646,11 +647,15 @@ public class StoredGamesManager implements StoredGamesService, GeneralListener, 
 
         ApiGame game = (ApiGame) storedGame;
 
-        if (cve != null && !cve.equals("null")) {
+        List<SportyTokenEntity> sportyTokenList = mRepository.getSportyTokenList();
+
+        if (cve != null && !cve.equals("null") && !sportyTokenList.isEmpty()) {
+
+            String token = sportyTokenList.get(0).getToken();
 
             String gameJson = new Gson().toJson(game);
 
-            ApiSportyUpdateGame updateGamePayload = new ApiSportyUpdateGame(cve, gameJson);
+            ApiSportyUpdateGame updateGamePayload = new ApiSportyUpdateGame(cve, gameJson, token);
 
             VbrApi.getInstance().postStartSportyGame(updateGamePayload, mContext, new Callback() {
                 @Override

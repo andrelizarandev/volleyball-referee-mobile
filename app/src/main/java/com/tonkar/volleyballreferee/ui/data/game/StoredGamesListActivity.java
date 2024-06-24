@@ -116,7 +116,6 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
             }
         });
 
-        sendNoSynchronizedGames();
 
         storedGamesList.setOnItemLongClickListener((parent, view, position, id) -> {
             ApiGameSummary game = mStoredGamesListAdapter.getItem(position);
@@ -127,9 +126,9 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
 
         sendNoSynchronizedGamesButton.setOnClickListener(v -> sendNoSynchronizedGames());
 
-        updateStoredGamesList();
+        sendNoSynchronizedGames();
 
-        setupFinishedSportyGame();
+        updateStoredGamesList();
 
     }
 
@@ -250,50 +249,6 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
             UiUtils.makeErrorText(this, getString(R.string.sync_failed_message), Toast.LENGTH_LONG).show();
             mSyncLayout.setRefreshing(false);
         });
-    }
-
-    private void setupFinishedSportyGame() {
-        List<SportyGameEntity> startedGames = vbrRepository.getRunningSportyGame();
-        Log.i("SPORTY STORED GAMES", "startedGames.size() = " + startedGames.size());
-        if (!startedGames.isEmpty()) sendFinishedSportyGame(0, startedGames.get(0).getCve());
-    }
-
-    private void sendFinishedSportyGame (int position, String cve) {
-
-        ApiGameSummary game = mStoredGamesListAdapter.getItem(position);
-        IStoredGame mStoredGame = mStoredGamesService.getGame(game.getId());
-
-        // Players
-        Set<ApiPlayer> homePlayerList = mStoredGame.getPlayers(TeamType.HOME);
-        Set<ApiPlayer> guestPlayerList = mStoredGame.getPlayers(TeamType.GUEST);
-
-        // Get sets and their points
-        int homeSets = mStoredGame.getSets(TeamType.HOME);
-        int guestSets = mStoredGame.getSets(TeamType.GUEST);
-
-        SportyResume sportyResume = new SportyResume(game, homePlayerList, guestPlayerList, homeSets, guestSets);
-
-        String json = new Gson().toJson(sportyResume);
-
-        ApiSportyUpdateGame payload = new ApiSportyUpdateGame(cve, json);
-
-        VbrApi.getInstance().postStartSportyGame(payload, this, new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                call.cancel();
-                Log.i("SPORTY STORED GAMES", "Error sending finished game");
-            }
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.code() == HttpURLConnection.HTTP_OK) {
-                    Log.i("SPORTY STORED GAMES", "Finished game sent");
-                    cleanCurrentRunningGame();
-                } else {
-                    Log.i("SPORTY STORED GAMES", "Error sending finished game");
-                }
-            }
-        });
-
     }
 
     private void cleanCurrentRunningGame() {

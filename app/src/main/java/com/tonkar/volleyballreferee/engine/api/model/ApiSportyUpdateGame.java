@@ -11,5 +11,6 @@ public class ApiSportyUpdateGame {
     @NonNull
     private String cve;
     private String content;
+    private String token;
 
 }

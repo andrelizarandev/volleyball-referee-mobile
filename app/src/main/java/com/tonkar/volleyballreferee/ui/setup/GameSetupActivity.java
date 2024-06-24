@@ -30,6 +30,7 @@ import com.tonkar.volleyballreferee.engine.api.model.ApiSportyUpdateGame;
 import com.tonkar.volleyballreferee.engine.api.model.ApiSportyValidateCode;
 import com.tonkar.volleyballreferee.engine.database.VbrRepository;
 import com.tonkar.volleyballreferee.engine.database.model.SportyGameEntity;
+import com.tonkar.volleyballreferee.engine.database.model.SportyTokenEntity;
 import com.tonkar.volleyballreferee.engine.game.GameType;
 import com.tonkar.volleyballreferee.engine.game.IGame;
 import com.tonkar.volleyballreferee.engine.service.StoredGamesManager;
@@ -191,19 +192,34 @@ public class GameSetupActivity extends AppCompatActivity {
     }
 
     private void startSportyGame () {
+
+        List<SportyTokenEntity> sportyTokenList = vbrRepository.getSportyTokenList();
+
         ApiSportyPostResponseFilterGames.JuegosData game = vbrRepository.getSportyGameByIndex(selectedSportyGame);
+
         Log.i("GAME_SETUP", "Starting sporty game with cve: " + game.cve);
-        ApiSportyUpdateGame payload = new ApiSportyUpdateGame(game.cve, null);
-        VbrApi.getInstance().postStartSportyGame(payload, this, new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                call.cancel();
-            }
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.code() == HttpURLConnection.HTTP_OK) {} else {}
-            }
-        });
+
+        if (!sportyTokenList.isEmpty()) {
+
+            String token = sportyTokenList.get(0).getToken();
+
+            ApiSportyUpdateGame payload = new ApiSportyUpdateGame(game.cve, null, token);
+
+            VbrApi.getInstance().postStartSportyGame(payload, this, new Callback() {
+
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    call.cancel();
+                }
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    if (response.code() == HttpURLConnection.HTTP_OK) {} else {}
+                }
+
+            });
+
+        }
     }
 
     private void setGameAsRunning () {

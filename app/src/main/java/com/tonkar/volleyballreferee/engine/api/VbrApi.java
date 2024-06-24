@@ -206,12 +206,14 @@ public class VbrApi {
         RequestBody requestBody = (data.getContent() != null)
             ? new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
+                .addFormDataPart("token", data.getToken())
                 .addFormDataPart("cve", data.getCve())
                 .addFormDataPart("content", data.getContent())
                 .build()
             : new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("cve", data.getCve())
+                .addFormDataPart("token", data.getToken())
                 .build();
 
         Request request = buildSportyPostWithFormData("?action=setinfogame", requestBody);
