@@ -26,6 +26,7 @@ import com.tonkar.volleyballreferee.engine.service.StoredGamesService;
 import com.tonkar.volleyballreferee.ui.setup.GameSetupActivity;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class SportyGameListAdapter extends RecyclerView.Adapter<SportyGameHolder> {
@@ -54,9 +55,20 @@ public class SportyGameListAdapter extends RecyclerView.Adapter<SportyGameHolder
     }
 
     public void onBindViewHolder (SportyGameHolder holder, int position) {
+
         List<ApiSportyValidateCode.EstadoData> stateList = vbrRepository.listStates();
-        holder.bind(listGames.get(position), stateList);
-        holder.itemView.setOnClickListener(v -> startIndoorGame(position));
+
+        ApiSportyPostResponseFilterGames.JuegosData game = listGames.get(position);
+
+        holder.bind(game, stateList);
+
+        if (Objects.equals(game.estado, "1")) {
+            holder.itemView.setClickable(false);
+            holder.itemView.setFocusable(false);
+        }
+
+        else holder.itemView.setOnClickListener(v -> startIndoorGame(position));
+
     }
 
     public void startIndoorGame (int position) {

@@ -195,6 +195,7 @@ public class MainActivity extends NavigationActivity {
     }
 
     public void signOutFromSporty () {
+        repository.deleteSportyToken();
         btnFilterGames.setVisibility(View.GONE);
         btnSignOutSporty.setVisibility(View.GONE);
         btnOpenValidateCodeDialog.setVisibility(View.VISIBLE);

@@ -43,11 +43,13 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="@dimen/big_margin_size"
-            android:layout_marginBottom="@dimen/default_margin_size">
+            android:layout_marginBottom="@dimen/default_margin_size"
+            android:orientation="vertical"
+            android:gravity="center">
 
             <LinearLayout
                 android:id="@+id/linearLayout2"
@@ -56,7 +58,8 @@
                 android:orientation="vertical"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:gravity="center">
+                android:gravity="center"
+                android:layout_marginBottom="@dimen/default_margin_size">
 
                 <TextView
                     android:id="@+id/item_sporty_game_tv_team1"
@@ -96,7 +99,7 @@
 
             </LinearLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

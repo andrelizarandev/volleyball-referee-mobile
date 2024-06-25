@@ -24,14 +24,22 @@ public class SportyGameHolder extends RecyclerView.ViewHolder {
         super(itemView);
     }
 
-    public ApiSportyValidateCode.EstadoData searchState (List<ApiSportyValidateCode.EstadoData> stateList, String state) {
-        for (ApiSportyValidateCode.EstadoData stateData : stateList) { if (stateData.cve.equals(state)) { return stateData; }}
+    public ApiSportyValidateCode.EstadoData getCurrentState (List<ApiSportyValidateCode.EstadoData> stateList, String state) {
+        for (ApiSportyValidateCode.EstadoData stateData : stateList) {
+            if (stateData.cve.equals(state)) {
+                return stateData;
+            }
+        }
         return null;
     }
 
     // You can add methods to update the views based on your data here
-    public void bind (ApiSportyPostResponseFilterGames.JuegosData data, List<ApiSportyValidateCode.EstadoData> stateList) {
-        ApiSportyValidateCode.EstadoData stateData = searchState(stateList, data.estado);
+    public void bind (
+        ApiSportyPostResponseFilterGames.JuegosData data,
+        List<ApiSportyValidateCode.EstadoData> stateList
+    ) {
+
+        ApiSportyValidateCode.EstadoData stateData = getCurrentState(stateList, data.estado);
 
         tvCategory.setText(data.competencia.rama + " - " + data.competencia.categoria);
         tvPhase.setText("Fase: " + data.fase);

@@ -47,13 +47,18 @@ public class ListSportyGamesActivity extends AppCompatActivity {
     }
 
     private List<ApiSportyPostResponseFilterGames.JuegosData> getGamesFromDb () {
+
         List<ApiSportyPostResponseFilterGames.JuegosData> parsedList = new ArrayList<>();
+
         List<SportyGameEntity> sportyListGames = vbrRepository.listSportyGames();
+
         for (SportyGameEntity sportyGameData : sportyListGames) {
             ApiSportyPostResponseFilterGames.JuegosData gameData = new Gson().fromJson(sportyGameData.getContent(), ApiSportyPostResponseFilterGames.JuegosData.class);
             parsedList.add(gameData);
         }
+
         return parsedList;
+
     }
 
     public void getComponents () {

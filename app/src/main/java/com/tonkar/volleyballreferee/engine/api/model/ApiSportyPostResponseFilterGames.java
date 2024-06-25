@@ -1,11 +1,6 @@
 package com.tonkar.volleyballreferee.engine.api.model;
-import androidx.room.Embedded;
-import androidx.room.PrimaryKey;
-
-import org.jetbrains.annotations.NotNull;
 
 import lombok.AllArgsConstructor;
-
 
 @AllArgsConstructor
 public class ApiSportyPostResponseFilterGames {
@@ -17,8 +12,8 @@ public class ApiSportyPostResponseFilterGames {
         public CompetenciaData competencia;
         public EquipoData equipo1;
         public EquipoData equipo2;
-        public ConfigGame confiGame;
         public String fase;
+        public ConfigGame confiGame;
         public String estado;
         public String dia;
         public String hora;
@@ -32,7 +27,6 @@ public class ApiSportyPostResponseFilterGames {
     }
 
     public static class EquipoData {
-        public String cve;
         public String nombre;
         public MarcadorData marcador;
         public JugadorData[] jugadores;

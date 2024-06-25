@@ -16,6 +16,7 @@ import com.tonkar.volleyballreferee.engine.api.JsonConverters
 import com.tonkar.volleyballreferee.engine.api.VbrApi
 import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostRequestFilterGames
 import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostResponseFilterGames
+import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostResponseFilterGames.JuegosData
 import com.tonkar.volleyballreferee.engine.database.VbrRepository
 import com.tonkar.volleyballreferee.engine.database.model.SportyGameEntity
 import com.tonkar.volleyballreferee.engine.sporty.helpers.DateHelper
@@ -32,13 +33,13 @@ import java.net.HttpURLConnection
 // Sporty, screen to filter by courts, days and states
 class SportyFilterDataActivity : AppCompatActivity() {
 
-    private lateinit var dateSpinner:Spinner
-    private lateinit var courtSpinner:Spinner
-    private lateinit var stateSpinner:Spinner
-    private lateinit var searchBtn:Button
+    private lateinit var dateSpinner: Spinner
+    private lateinit var courtSpinner: Spinner
+    private lateinit var stateSpinner: Spinner
+    private lateinit var searchBtn: Button
     private val vbrRepository = VbrRepository(this)
 
-    override fun onCreate (savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_sporty_filter_data)
@@ -51,18 +52,18 @@ class SportyFilterDataActivity : AppCompatActivity() {
         }
     }
 
-    private fun configureToolbar () {
+    private fun configureToolbar() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.setTitle("Filtrar Sporty")
         setSupportActionBar(toolbar)
     }
 
-    private fun initUi () {
+    private fun initUi() {
         getComponents()
         addListeners()
     }
 
-    private fun getComponents () {
+    private fun getComponents() {
 
         val courtList = vbrRepository.listCourts()
         val stateList = vbrRepository.listStates()
@@ -94,11 +95,11 @@ class SportyFilterDataActivity : AppCompatActivity() {
 
     }
 
-    private fun addListeners () {
+    private fun addListeners() {
         searchBtn.setOnClickListener { v -> fetchByFilters() }
     }
 
-    private fun fetchByFilters () {
+    private fun fetchByFilters() {
 
         val court = courtSpinner.selectedItem as Int
         val courtsList = vbrRepository.listCourts()
@@ -114,26 +115,43 @@ class SportyFilterDataActivity : AppCompatActivity() {
 
         val token = vbrRepository.sportyTokenList
 
-        val obj = ApiSportyPostRequestFilterGames(token[0].token, selectedCourt.cve, selectedDate, selectedState.cve)
+        val obj = ApiSportyPostRequestFilterGames(token[0].token, selectedCourt.cve, selectedDate, selectedState.cve);
+
+        val gameJson = Gson().toJson(obj)
+
+        println(gameJson);
 
         VbrApi.getInstance().postSportyFilters(obj, this, object : Callback {
-            override fun onFailure(call: Call, e: IOException) { call.cancel() }
-            override fun onResponse(call: Call, response:Response) {
-                if (response.code != HttpURLConnection.HTTP_OK) { call.cancel() }
-                else {
-                    val resp = JsonConverters.GSON.fromJson(response.body!!.string(), ApiSportyPostResponseFilterGames::class.java)
+
+            override fun onFailure(call: Call, e: IOException) {
+                call.cancel()
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+
+                if (response.code != HttpURLConnection.HTTP_OK) {
+                    call.cancel()
+                } else {
+
+                    // Can only be used once
+                    val resp = Gson().fromJson(response.body!!.string(), ApiSportyPostResponseFilterGames::class.java)
+
                     vbrRepository.deleteAllSportyGames()
+
                     for (game in resp.juegos) {
                         val parsedContent = Gson().toJson(game)
                         val entity = SportyGameEntity(game.cve, parsedContent, 0)
                         vbrRepository.insertSportyGame(entity)
                     }
+
                     val intent = Intent(this@SportyFilterDataActivity, ListSportyGamesActivity::class.java)
+
                     startActivity(intent)
+
                 }
+
             }
         })
 
     }
-
 }
