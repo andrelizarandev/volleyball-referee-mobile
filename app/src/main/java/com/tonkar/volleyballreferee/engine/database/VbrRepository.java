@@ -12,6 +12,7 @@ import com.tonkar.volleyballreferee.engine.api.model.ApiGame;
 import com.tonkar.volleyballreferee.engine.api.model.ApiGameSummary;
 import com.tonkar.volleyballreferee.engine.api.model.ApiLeague;
 import com.tonkar.volleyballreferee.engine.api.model.ApiLeagueSummary;
+import com.tonkar.volleyballreferee.engine.api.model.ApiPlayer;
 import com.tonkar.volleyballreferee.engine.api.model.ApiRules;
 import com.tonkar.volleyballreferee.engine.api.model.ApiRulesSummary;
 import com.tonkar.volleyballreferee.engine.api.model.ApiSportyDate;
@@ -294,19 +295,21 @@ public class VbrRepository {
         return mGameDao.isGameIndexed(id);
     }
 
-    private String getCurrentSportyGame () {
+    private SportyGameEntity getCurrentSportyGame () {
         List<SportyGameEntity> sportyGames = this.getRunningSportyGame();
-        return (!sportyGames.isEmpty()) ? sportyGames.get(0).getCve() : "null";
+        return (!sportyGames.isEmpty()) ? sportyGames.get(0) : null;
     }
 
     public void insertGame (final ApiGame game, boolean synced, boolean syncInsertion) {
 
-        String result = getCurrentSportyGame();
+        SportyGameEntity result = getCurrentSportyGame();
         GameEntity gameEntity = new GameEntity();
+
+        String currentCve = (result != null) ? result.getCve() : "null";
 
         Runnable runnable = () -> {
             game.setScore(game.buildScore());
-            gameEntity.setCve(result);
+            gameEntity.setCve(currentCve);
             gameEntity.setId(game.getId());
             gameEntity.setCreatedBy(game.getCreatedBy());
             gameEntity.setCreatedAt(game.getCreatedAt());
@@ -335,6 +338,7 @@ public class VbrRepository {
             gameEntity.setGuestSets(game.getGuestSets());
             gameEntity.setScore(game.getScore());
             gameEntity.setContent(JsonConverters.GSON.toJson(game, ApiGame.class));
+
             mGameDao.insert(gameEntity);
         };
 

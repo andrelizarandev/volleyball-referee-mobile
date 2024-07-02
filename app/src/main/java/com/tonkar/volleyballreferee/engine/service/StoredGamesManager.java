@@ -355,6 +355,7 @@ public class StoredGamesManager implements StoredGamesService, GeneralListener, 
         homeTeam.setCoach(mGame.getCoachName(TeamType.HOME));
 
         for (ApiPlayer player : mGame.getPlayers(TeamType.HOME)) {
+            System.out.println(player.getCve());
             if (mGame.isLibero(TeamType.HOME, player.getNum())) {
                 homeTeam.getLiberos().add(player);
             } else {
@@ -376,6 +377,7 @@ public class StoredGamesManager implements StoredGamesService, GeneralListener, 
         guestTeam.setCoach(mGame.getCoachName(TeamType.GUEST));
 
         for (ApiPlayer player : mGame.getPlayers(TeamType.GUEST)) {
+            System.out.println(player.getCve());
             if (mGame.isLibero(TeamType.GUEST, player.getNum())) {
                 guestTeam.getLiberos().add(player);
             } else {

@@ -403,5 +403,6 @@
     <string name="sporty_game_is_not_synced">-</string>
     <string name="sporty_send_no_synced_games">-</string>
     <string name="sporty_games_synced">-</string>
+    <string name="sporty_no_games_found">-</string>
 
 </resources>

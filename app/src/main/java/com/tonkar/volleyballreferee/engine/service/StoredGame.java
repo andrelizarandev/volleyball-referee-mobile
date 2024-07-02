@@ -199,6 +199,12 @@ public class StoredGame extends ApiGame implements IStoredGame {
     public void addPlayer(TeamType teamType, int number) {}
 
     @Override
+    public void addPlayerWithDefaultCve(TeamType teamType, int number) {}
+
+    @Override
+    public void addPlayerWithCveAndName(TeamType teamType, int number, String name, int cve) {}
+
+    @Override
     public void removePlayer(TeamType teamType, int number) {}
 
     @Override

@@ -41,10 +41,30 @@ public abstract class TeamDefinition extends ApiTeam {
         return getPlayers().size();
     }
 
-    public void addPlayer(final int number) {
+    public void addPlayer (final int number) {
         if (!hasPlayer(number)) {
             Log.i(Tags.TEAM, String.format("Add player #%d to %s team", number, mTeamType));
             getPlayers().add(new ApiPlayer(number));
+        }
+    }
+
+    public void addPlayerWithDefaultCve (final int number) {
+        if (!hasPlayer(number)) {
+            Log.i(Tags.TEAM, String.format("Add player #%d to %s team", number, mTeamType));
+            ApiPlayer player = new ApiPlayer(number);
+            player.setCve(-1);
+            getPlayers().add(player);
+        }
+    }
+
+    // For players already in the database
+    public void addPlayerWithCveAndName (final int number, final String name, final int cve) {
+        if (!hasPlayer(number)) {
+            Log.i(Tags.TEAM, String.format("Add player #%d to %s team", number, mTeamType));
+            ApiPlayer player = new ApiPlayer(number);
+            player.setName(name);
+            player.setCve(cve);
+            getPlayers().add(player);
         }
     }
 

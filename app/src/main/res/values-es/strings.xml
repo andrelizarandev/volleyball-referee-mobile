@@ -402,5 +402,6 @@
     <string name="sporty_game_is_not_synced">Juego no sincronizado</string>
     <string name="sporty_send_no_synced_games">Enviar juegos no sincronizados</string>
     <string name="sporty_games_synced">Juegos sincronizados</string>
+    <string name="sporty_no_games_found">No se han encontrado juegos</string>
 
 </resources>

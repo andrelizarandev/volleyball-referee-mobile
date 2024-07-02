@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -12,11 +13,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.gson.Gson
 import com.tonkar.volleyballreferee.R
-import com.tonkar.volleyballreferee.engine.api.JsonConverters
 import com.tonkar.volleyballreferee.engine.api.VbrApi
 import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostRequestFilterGames
 import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostResponseFilterGames
-import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostResponseFilterGames.JuegosData
 import com.tonkar.volleyballreferee.engine.database.VbrRepository
 import com.tonkar.volleyballreferee.engine.database.model.SportyGameEntity
 import com.tonkar.volleyballreferee.engine.sporty.helpers.DateHelper
@@ -24,6 +23,7 @@ import com.tonkar.volleyballreferee.engine.sporty.parsers.SportyCourseParser
 import com.tonkar.volleyballreferee.engine.sporty.parsers.SportyDateParser
 import com.tonkar.volleyballreferee.engine.sporty.parsers.SportyStateParser
 import com.tonkar.volleyballreferee.ui.rules.IntegerRuleAdapter
+import com.tonkar.volleyballreferee.ui.util.UiUtils
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
@@ -119,11 +119,11 @@ class SportyFilterDataActivity : AppCompatActivity() {
 
         VbrApi.getInstance().postSportyFilters(obj, this, object : Callback {
 
-            override fun onFailure(call: Call, e: IOException) {
+            override fun onFailure (call: Call, e: IOException) {
                 call.cancel()
             }
 
-            override fun onResponse(call: Call, response: Response) {
+            override fun onResponse (call: Call, response: Response) {
 
                 if (response.code != HttpURLConnection.HTTP_OK) {
 
@@ -132,19 +132,35 @@ class SportyFilterDataActivity : AppCompatActivity() {
                 } else {
 
                     // Can only be used once
-                    val resp = Gson().fromJson(response.body!!.string(), ApiSportyPostResponseFilterGames::class.java)
+                    val response = response.body!!.string()
 
-                    vbrRepository.deleteAllSportyGames()
+                    val resp = Gson().fromJson(response, ApiSportyPostResponseFilterGames::class.java)
 
-                    for (game in resp.juegos) {
-                        val parsedContent = Gson().toJson(game)
-                        val entity = SportyGameEntity(game.cve, parsedContent, 0)
-                        vbrRepository.insertSportyGame(entity)
+                    val juegos = resp.juegos
+
+                    if (juegos != null) {
+
+                        vbrRepository.deleteAllSportyGames()
+
+                        for (game in juegos) {
+                            val parsedContent = Gson().toJson(game)
+                            val entity = SportyGameEntity(game.cve, parsedContent, 0)
+                            vbrRepository.insertSportyGame(entity)
+                        }
+
+                        val intent = Intent(this@SportyFilterDataActivity, ListSportyGamesActivity::class.java)
+
+                        startActivity(intent)
+
+                    } else {
+
+                        runOnUiThread {
+
+                            UiUtils.makeText(this@SportyFilterDataActivity, getString(R.string.sporty_no_games_found), Toast.LENGTH_LONG).show()
+                            
+                        }
+
                     }
-
-                    val intent = Intent(this@SportyFilterDataActivity, ListSportyGamesActivity::class.java)
-
-                    startActivity(intent)
 
                 }
 

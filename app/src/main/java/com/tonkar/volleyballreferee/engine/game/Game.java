@@ -757,8 +757,18 @@ public abstract class Game extends BaseGame {
     }
 
     @Override
-    public void addPlayer(TeamType teamType, int number) {
+    public void addPlayer (TeamType teamType, int number) {
         getTeamDefinition(teamType).addPlayer(number);
+    }
+
+    @Override
+    public void addPlayerWithDefaultCve (TeamType teamType, int number) {
+        getTeamDefinition(teamType).addPlayerWithDefaultCve(number);
+    }
+
+    @Override
+    public void addPlayerWithCveAndName(TeamType teamType, int number, String name, int cve) {
+        getTeamDefinition(teamType).addPlayerWithCveAndName(number, name, cve);
     }
 
     @Override

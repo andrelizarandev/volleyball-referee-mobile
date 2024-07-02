@@ -78,11 +78,17 @@ public class TeamSetupFragment extends Fragment implements BaseTeamServiceHandle
     }
 
     public void setSportyPlayersList (ApiSportyPostResponseFilterGames.JuegosData parsedGame) {
+        System.out.println("HOME");
         for (ApiSportyPostResponseFilterGames.JugadorData player : parsedGame.equipo1.jugadores) {
-            mTeamService.addPlayer(TeamType.HOME, player.dorsal);
+            int parsedCve = (player.cve == 0) ? -1 : player.cve;
+            System.out.println(parsedCve);
+            mTeamService.addPlayerWithCveAndName(TeamType.HOME, player.dorsal, player.nombre_completo, parsedCve);
         }
+        System.out.println("GUEST");
         for (ApiSportyPostResponseFilterGames.JugadorData player : parsedGame.equipo2.jugadores) {
-            mTeamService.addPlayer(TeamType.GUEST, player.dorsal);
+            int parsedCve = (player.cve == 0) ? -1 : player.cve;
+            System.out.println(parsedCve);
+            mTeamService.addPlayerWithCveAndName(TeamType.GUEST, player.dorsal, player.nombre_completo, parsedCve);
         }
     }
 
@@ -101,15 +107,6 @@ public class TeamSetupFragment extends Fragment implements BaseTeamServiceHandle
         }
         for (ApiSportyPostResponseFilterGames.JugadorData player : parsedGame.equipo2.jugadores) {
             if (player.es_libero) { mTeamService.addLibero(TeamType.GUEST, player.dorsal); }
-        }
-    }
-
-    public void setPlayerNames (ApiSportyPostResponseFilterGames.JuegosData parsedGame) {
-        for (ApiSportyPostResponseFilterGames.JugadorData player : parsedGame.equipo1.jugadores) {
-            mTeamService.setPlayerName(TeamType.HOME, player.dorsal, player.nombre_completo);
-        }
-        for (ApiSportyPostResponseFilterGames.JugadorData player : parsedGame.equipo2.jugadores) {
-            mTeamService.setPlayerName(TeamType.GUEST, player.dorsal, player.nombre_completo);
         }
     }
 
@@ -163,7 +160,6 @@ public class TeamSetupFragment extends Fragment implements BaseTeamServiceHandle
             setGameGender(game);
             setSportyCaptain(game);
             setSportyLibero(game);
-            setPlayerNames(game);
             setRules(game);
         }
 
@@ -440,7 +436,7 @@ public class TeamSetupFragment extends Fragment implements BaseTeamServiceHandle
                     final int number = Integer.parseInt(cButton.getText().toString());
                     if (isChecked) {
                         Log.i(Tags.SETUP_UI, String.format("Checked #%d player of %s team", number, mTeamType));
-                        mTeamService.addPlayer(mTeamType, number);
+                        mTeamService.addPlayerWithDefaultCve(mTeamType, number);
                     } else {
                         Log.i(Tags.SETUP_UI, String.format("Unchecked #%d player of %s team", number, mTeamType));
                         mTeamService.removePlayer(mTeamType, number);

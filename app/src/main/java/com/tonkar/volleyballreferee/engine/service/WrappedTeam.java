@@ -98,6 +98,12 @@ public class WrappedTeam implements IBaseTeam {
     }
 
     @Override
+    public void addPlayerWithDefaultCve(TeamType teamType, int number) {}
+
+    @Override
+    public void addPlayerWithCveAndName(TeamType teamType, int number, String name, int cve) {}
+
+    @Override
     public void removePlayer(TeamType teamType, int number) {
         mTeamDefinition.removePlayer(number);
     }

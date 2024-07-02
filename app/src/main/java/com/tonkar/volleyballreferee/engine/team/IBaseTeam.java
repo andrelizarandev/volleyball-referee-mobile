@@ -39,6 +39,10 @@ public interface IBaseTeam {
 
     void addPlayer(TeamType teamType, int number);
 
+    void addPlayerWithDefaultCve (TeamType teamType, int number);
+
+    void addPlayerWithCveAndName(TeamType teamType, int number, String name, int cve);
+
     void removePlayer(TeamType teamType, int number);
 
     boolean hasPlayer(TeamType teamType, int number);
