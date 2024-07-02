@@ -44,7 +44,7 @@ public class ApiSportyPostResponseFilterGames {
     }
 
     public static class JugadorData {
-        public String cve;
+        public int cve;
         public String nombre_completo;
         public int dorsal;
         public Boolean es_capitan;

@@ -117,10 +117,6 @@ class SportyFilterDataActivity : AppCompatActivity() {
 
         val obj = ApiSportyPostRequestFilterGames(token[0].token, selectedCourt.cve, selectedDate, selectedState.cve);
 
-        val gameJson = Gson().toJson(obj)
-
-        println(gameJson);
-
         VbrApi.getInstance().postSportyFilters(obj, this, object : Callback {
 
             override fun onFailure(call: Call, e: IOException) {
@@ -130,7 +126,9 @@ class SportyFilterDataActivity : AppCompatActivity() {
             override fun onResponse(call: Call, response: Response) {
 
                 if (response.code != HttpURLConnection.HTTP_OK) {
+
                     call.cancel()
+
                 } else {
 
                     // Can only be used once

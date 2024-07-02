@@ -192,6 +192,7 @@ public class VbrApi {
                 .addFormDataPart("token", data.getToken())
                 .addFormDataPart("cancha", data.getCancha())
                 .addFormDataPart("dia", data.getDia())
+                .addFormDataPart("estado", data.getEstado())
                 .build();
         Request request = buildSportyPostWithFormData("?action=getinfogames", requestBody);
         getHttpClient(context).newCall(request).enqueue(callback);
