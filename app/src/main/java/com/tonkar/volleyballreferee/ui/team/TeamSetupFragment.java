@@ -78,17 +78,11 @@ public class TeamSetupFragment extends Fragment implements BaseTeamServiceHandle
     }
 
     public void setSportyPlayersList (ApiSportyPostResponseFilterGames.JuegosData parsedGame) {
-        System.out.println("HOME");
         for (ApiSportyPostResponseFilterGames.JugadorData player : parsedGame.equipo1.jugadores) {
-            int parsedCve = (player.cve == 0) ? -1 : player.cve;
-            System.out.println(parsedCve);
-            mTeamService.addPlayerWithCveAndName(TeamType.HOME, player.dorsal, player.nombre_completo, parsedCve);
+            mTeamService.addPlayerWithCveAndName(TeamType.HOME, player.dorsal, player.nombre_completo, player.cve);
         }
-        System.out.println("GUEST");
         for (ApiSportyPostResponseFilterGames.JugadorData player : parsedGame.equipo2.jugadores) {
-            int parsedCve = (player.cve == 0) ? -1 : player.cve;
-            System.out.println(parsedCve);
-            mTeamService.addPlayerWithCveAndName(TeamType.GUEST, player.dorsal, player.nombre_completo, parsedCve);
+            mTeamService.addPlayerWithCveAndName(TeamType.GUEST, player.dorsal, player.nombre_completo, player.cve);
         }
     }
 

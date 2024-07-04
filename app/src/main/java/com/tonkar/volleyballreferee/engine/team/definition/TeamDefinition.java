@@ -110,6 +110,7 @@ public abstract class TeamDefinition extends ApiTeam {
         for (ApiPlayer player : getPlayers()) {
             if (player.getNum() == number) {
                 player.setName(name);
+                player.setCve(-1);
                 break;
             }
         }

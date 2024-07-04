@@ -39,7 +39,7 @@ class SportyFilterDataActivity : AppCompatActivity() {
     private lateinit var searchBtn: Button
     private val vbrRepository = VbrRepository(this)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate (savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_sporty_filter_data)
