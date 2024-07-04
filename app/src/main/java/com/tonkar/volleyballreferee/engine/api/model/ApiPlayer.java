@@ -18,9 +18,11 @@ public class ApiPlayer implements Comparable<ApiPlayer> {
     private String name;
     @SerializedName("cve")
     private int cve;
+    @SerializedName("isEdited")
+    private int isEdited;
 
     public ApiPlayer (int num) {
-        this(num, "", -1);
+        this(num, "", 0, 0);
     }
 
     @Override
