@@ -204,12 +204,14 @@ public class VbrApi {
 
         Log.i("SPORTY", json);
 
-        RequestBody requestBody = (data.getContent() != null)
+        RequestBody requestBody = (data.getGameSummary() != null)
             ? new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("token", data.getToken())
                 .addFormDataPart("cve", data.getCve())
-                .addFormDataPart("content", data.getContent())
+                .addFormDataPart("gameSummary", data.getGameSummary())
+                .addFormDataPart("gameContent", data.getGameContent())
+
                 .build()
             : new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)

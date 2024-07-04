@@ -649,6 +649,8 @@ public class StoredGamesManager implements StoredGamesService, GeneralListener, 
 
         ApiGame game = (ApiGame) storedGame;
 
+        String content = mRepository.getGameContent(game.getId());
+
         List<SportyTokenEntity> sportyTokenList = mRepository.getSportyTokenList();
 
         if (cve != null && !cve.equals("null") && !sportyTokenList.isEmpty()) {
@@ -657,7 +659,7 @@ public class StoredGamesManager implements StoredGamesService, GeneralListener, 
 
             String gameJson = new Gson().toJson(game);
 
-            ApiSportyUpdateGame updateGamePayload = new ApiSportyUpdateGame(cve, gameJson, token);
+            ApiSportyUpdateGame updateGamePayload = new ApiSportyUpdateGame(cve, gameJson, content, token);
 
             VbrApi.getInstance().postStartSportyGame(updateGamePayload, mContext, new Callback() {
                 @Override

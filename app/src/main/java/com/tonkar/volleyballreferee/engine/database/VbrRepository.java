@@ -286,6 +286,10 @@ public class VbrRepository {
         return mGameDao.listGames();
     }
 
+    public String getGameContent (String id) {
+        return mGameDao.findContentById(id);
+    }
+
     public IStoredGame getGame(String id) {
         String json = mGameDao.findContentById(id);
         return JsonConverters.GSON.fromJson(json, StoredGame.class);

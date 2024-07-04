@@ -10,7 +10,8 @@ public class ApiSportyUpdateGame {
 
     @NonNull
     private String cve;
-    private String content;
+    private String gameSummary;
+    private String gameContent;
     private String token;
 
 }

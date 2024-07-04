@@ -203,7 +203,7 @@ public class GameSetupActivity extends AppCompatActivity {
 
             String token = sportyTokenList.get(0).getToken();
 
-            ApiSportyUpdateGame payload = new ApiSportyUpdateGame(game.cve, null, token);
+            ApiSportyUpdateGame payload = new ApiSportyUpdateGame(game.cve, null, null, token);
 
             VbrApi.getInstance().postStartSportyGame(payload, this, new Callback() {
 
