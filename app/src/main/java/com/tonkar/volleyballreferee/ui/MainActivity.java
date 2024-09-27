@@ -267,7 +267,7 @@ public class MainActivity extends NavigationActivity {
         startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this, view, "gameKindToToolbar").toBundle());
     }
 
-    public void startIndoor4x4Game(View view) {
+    public void startIndoor4x4Game (View view) {
         Log.i(Tags.GAME_UI, "Start a 4x4 indoor game");
         ApiUserSummary user = PrefUtils.getUser(this);
         Indoor4x4Game game = GameFactory.createIndoor4x4Game(UUID.randomUUID().toString(), user.getId(), user.getPseudo(),
@@ -279,7 +279,7 @@ public class MainActivity extends NavigationActivity {
         startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this, view, "gameKindToToolbar").toBundle());
     }
 
-    public void startTimeBasedGame(View view) {
+    public void startTimeBasedGame (View view) {
         Log.i(Tags.GAME_UI, "Start a time-based game");
         ApiUserSummary user = PrefUtils.getUser(this);
         TimeBasedGame game = GameFactory.createTimeBasedGame(UUID.randomUUID().toString(), user.getId(), user.getPseudo(),
@@ -291,13 +291,18 @@ public class MainActivity extends NavigationActivity {
         startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this, view, "gameKindToToolbar").toBundle());
     }
 
-    public void startScoreBasedGame(View view) {
+    public void startScoreBasedGame (View view) {
         Log.i(Tags.GAME_UI, "Start a score-based game");
         ApiUserSummary user = PrefUtils.getUser(this);
-        IndoorGame game = GameFactory.createPointBasedGame(UUID.randomUUID().toString(), user.getId(), user.getPseudo(),
-                System.currentTimeMillis(), 0L, Rules.officialIndoorRules());
+        IndoorGame game = GameFactory.createPointBasedGame(
+                UUID.randomUUID().toString(),
+                user.getId(),
+                user.getPseudo(),
+                System.currentTimeMillis(),
+                0L,
+                Rules.officialIndoorRules()
+        );
         mStoredGamesService.saveSetupGame(game);
-
         Log.i(Tags.GAME_UI, "Start activity to setup game quickly");
         final Intent intent = new Intent(this, QuickGameSetupActivity.class);
         startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this, view, "gameKindToToolbar").toBundle());

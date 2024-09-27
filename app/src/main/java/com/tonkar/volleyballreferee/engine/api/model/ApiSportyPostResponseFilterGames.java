@@ -41,6 +41,7 @@ public class ApiSportyPostResponseFilterGames {
     public static class ConfigGame {
         public String cntSets;
         public int pntSet;
+        public ActionVR actionvr;
     }
 
     public static class JugadorData {
@@ -52,3 +53,4 @@ public class ApiSportyPostResponseFilterGames {
     }
 
 }
+

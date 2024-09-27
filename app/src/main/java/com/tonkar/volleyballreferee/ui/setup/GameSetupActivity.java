@@ -65,7 +65,7 @@ public class GameSetupActivity extends AppCompatActivity {
     private int selectedSportyGame;
     private final VbrRepository vbrRepository = new VbrRepository(this);
 
-    public GameSetupActivity() {
+    public GameSetupActivity () {
         super();
         getSupportFragmentManager().addFragmentOnAttachListener((fragmentManager, fragment) -> {
             if (fragment instanceof RulesHandler) {
@@ -116,27 +116,26 @@ public class GameSetupActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
+    protected void onPause () {
         super.onPause();
         StoredGamesService storedGamesService = new StoredGamesManager(this);
         storedGamesService.saveSetupGame(mGame);
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed () {
         cancelSetup();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu (Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_help, menu);
-
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected (MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.action_help_menu) {
             showGameSetupStatus();
@@ -148,7 +147,7 @@ public class GameSetupActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void computeStartLayoutVisibility() {
+    public void computeStartLayoutVisibility () {
         View saveLayout = findViewById(R.id.start_game_layout);
         if (mGame.getTeamName(TeamType.HOME).length() < 2 || mGame.getNumberOfPlayers(TeamType.HOME) < mGame.getExpectedNumberOfPlayersOnCourt()
                 || mGame.getTeamName(TeamType.GUEST).length() < 2 || mGame.getNumberOfPlayers(TeamType.GUEST) < mGame.getExpectedNumberOfPlayersOnCourt()
@@ -163,7 +162,7 @@ public class GameSetupActivity extends AppCompatActivity {
         }
     }
 
-    public void startGame(View view) {
+    public void startGame (View view) {
         Log.i(Tags.SETUP_UI, "Start game");
         final AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppTheme_Dialog);
         builder.setTitle(getString(R.string.game_setup_title)).setMessage(getString(R.string.confirm_game_setup_question));
@@ -192,33 +191,20 @@ public class GameSetupActivity extends AppCompatActivity {
     }
 
     private void startSportyGame () {
-
         List<SportyTokenEntity> sportyTokenList = vbrRepository.getSportyTokenList();
-
         ApiSportyPostResponseFilterGames.JuegosData game = vbrRepository.getSportyGameByIndex(selectedSportyGame);
-
         Log.i("GAME_SETUP", "Starting sporty game with cve: " + game.cve);
-
         if (!sportyTokenList.isEmpty()) {
-
             String token = sportyTokenList.get(0).getToken();
-
             ApiSportyUpdateGame payload = new ApiSportyUpdateGame(game.cve, null, null, token);
-
             VbrApi.getInstance().postStartSportyGame(payload, this, new Callback() {
-
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
                     call.cancel();
                 }
-
                 @Override
-                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                    if (response.code() == HttpURLConnection.HTTP_OK) {} else {}
-                }
-
+                public void onResponse(@NonNull Call call, @NonNull Response response) {}
             });
-
         }
     }
 
@@ -227,7 +213,7 @@ public class GameSetupActivity extends AppCompatActivity {
         vbrRepository.setAsRunningSportyGame(game.cve);
     }
 
-    private void saveTeams() {
+    private void saveTeams () {
         if (mGame.getCreatedBy().equals(PrefUtils.getUser(this).getId())) {
             StoredTeamsService storedTeamsService = new StoredTeamsManager(this);
             GameType gameType = mGame.getTeamsKind();
@@ -236,23 +222,22 @@ public class GameSetupActivity extends AppCompatActivity {
         }
     }
 
-    private void saveRules() {
+    private void saveRules () {
         if (mGame.getCreatedBy().equals(PrefUtils.getUser(this).getId())) {
             StoredRulesService storedRulesService = new StoredRulesManager(this);
             storedRulesService.createAndSaveRulesFrom(mGame.getRules());
         }
     }
 
-    private void saveLeague() {
+    private void saveLeague () {
         if (mGame.getCreatedBy().equals(PrefUtils.getUser(this).getId())) {
             StoredLeaguesService storedLeaguesService = new StoredLeaguesManager(this);
             storedLeaguesService.createAndSaveLeagueFrom(mGame.getLeague());
         }
     }
 
-    private void cancelSetup() {
+    private void cancelSetup () {
         Log.i(Tags.SETUP_UI, "Cancel setup");
-
         final AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppTheme_Dialog);
         builder.setTitle(getString(R.string.game_setup_title)).setMessage(getString(R.string.leave_game_setup_question));
         builder.setPositiveButton(android.R.string.yes, (dialog, which) -> {
@@ -263,7 +248,6 @@ public class GameSetupActivity extends AppCompatActivity {
             UiUtils.navigateToHome(GameSetupActivity.this);
         });
         builder.setNegativeButton(android.R.string.no, (dialog, which) -> {});
-
         AlertDialog alertDialog = builder.show();
         UiUtils.setAlertDialogMessageSize(alertDialog, getResources());
     }
@@ -283,15 +267,11 @@ public class GameSetupActivity extends AppCompatActivity {
             } else {
                 fragment = null;
             }
-
-                    final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    UiUtils.animateNavigationView(transaction);
-                    transaction.replace(R.id.game_setup_container, fragment).commit();
-
-                    return true;
-                }
-        );
-
+            final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            UiUtils.animateNavigationView(transaction);
+            transaction.replace(R.id.game_setup_container, fragment).commit();
+            return true;
+        });
         if (savedInstanceState == null) {
             gameSetupNavigation.setSelectedItemId(R.id.home_team_tab);
         }

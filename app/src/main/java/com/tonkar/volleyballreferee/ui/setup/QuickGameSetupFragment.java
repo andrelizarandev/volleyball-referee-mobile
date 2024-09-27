@@ -21,7 +21,9 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.tonkar.volleyballreferee.R;
 import com.tonkar.volleyballreferee.engine.Tags;
+import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostResponseFilterGames;
 import com.tonkar.volleyballreferee.engine.api.model.ApiTeamSummary;
+import com.tonkar.volleyballreferee.engine.database.VbrRepository;
 import com.tonkar.volleyballreferee.engine.game.GameType;
 import com.tonkar.volleyballreferee.engine.game.IGame;
 import com.tonkar.volleyballreferee.engine.game.ITimeBasedGame;
@@ -51,25 +53,27 @@ public class QuickGameSetupFragment extends Fragment implements GameServiceHandl
     private AutocompleteTeamListAdapter mHomeTeamAutocompleteTeamListAdapter;
     private AutocompleteTeamListAdapter mGuestTeamAutocompleteTeamListAdapter;
 
+    // Sporty
+    private VbrRepository mVbrRepository;
+
     public QuickGameSetupFragment() {}
 
-    public static QuickGameSetupFragment newInstance(boolean create) {
+    public static QuickGameSetupFragment newInstance (boolean create, int selectedSportyGameIndex) {
         QuickGameSetupFragment fragment = new QuickGameSetupFragment();
-
         Bundle args = new Bundle();
+        args.putInt("sporty_game_position", selectedSportyGameIndex);
         args.putBoolean("create", create);
-
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView (@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         Log.i(Tags.SETUP_UI, "Create game setup fragment");
+        int selectedSportyGameIndex = getArguments().getInt("sporty_game_position");
         View view = inflater.inflate(R.layout.fragment_quick_game_setup, container, false);
-
         final boolean create = getArguments().getBoolean("create");
-
         final StoredTeamsService storedTeamsService = new StoredTeamsManager(getContext());
 
         mGenderButton = view.findViewById(R.id.switch_gender_button);
@@ -79,14 +83,15 @@ public class QuickGameSetupFragment extends Fragment implements GameServiceHandl
             GenderType genderType = mGame.getGender().next();
             updateGender(genderType);
         });
-        mGenderButton.setEnabled(create);
 
+        mGenderButton.setEnabled(create);
         mHomeTeamCaptainButton = view.findViewById(R.id.home_team_captain_number_button);
         mGuestTeamCaptainButton = view.findViewById(R.id.guest_team_captain_number_button);
 
         final AutoCompleteTextView homeTeamNameInput = view.findViewById(R.id.home_team_name_input_text);
         homeTeamNameInput.setText(mGame.getTeamName(TeamType.HOME));
         homeTeamNameInput.addTextChangedListener(new TextWatcher() {
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
@@ -124,11 +129,18 @@ public class QuickGameSetupFragment extends Fragment implements GameServiceHandl
             public void afterTextChanged(Editable s) {}
         });
 
+        if (selectedSportyGameIndex != -1) {
+            ApiSportyPostResponseFilterGames.JuegosData game = mVbrRepository.getSportyGameByIndex(selectedSportyGameIndex);
+            homeTeamNameInput.setText(game.equipo1.nombre);
+            guestTeamNameInput.setText(game.equipo2.nombre);
+        }
+
         mHomeTeamColorButton = view.findViewById(R.id.home_team_color_button);
         mHomeTeamColorButton.setOnClickListener(button -> {
             UiUtils.animate(getContext(), mHomeTeamColorButton);
             selectTeamColor(TeamType.HOME);
         });
+
         mGuestTeamColorButton = view.findViewById(R.id.guest_team_color_button);
         mGuestTeamColorButton.setOnClickListener(button -> {
             UiUtils.animate(getContext(), mGuestTeamColorButton);
@@ -229,10 +241,11 @@ public class QuickGameSetupFragment extends Fragment implements GameServiceHandl
         }
 
         return view;
+
     }
 
     @Override
-    public void onAttach(@NonNull Context context) {
+    public void onAttach (@NonNull Context context) {
         super.onAttach(context);
         getChildFragmentManager().addFragmentOnAttachListener((fragmentManager, childFragment) -> {
             if (childFragment instanceof PlayerNamesInputDialogFragment) {
@@ -240,9 +253,10 @@ public class QuickGameSetupFragment extends Fragment implements GameServiceHandl
                 fragment.setTeam(mGame);
             }
         });
+        mVbrRepository = new VbrRepository(context);
     }
 
-    private void selectTeamColor(final TeamType teamType) {
+    private void selectTeamColor (final TeamType teamType) {
         Log.i(Tags.SETUP_UI, String.format("Select %s team color", teamType));
         ColorSelectionDialog colorSelectionDialog = new ColorSelectionDialog(getLayoutInflater(), getContext(), getString(R.string.select_shirts_color),
                 getResources().getStringArray(R.array.shirt_colors), mGame.getTeamColor(teamType)) {
@@ -255,7 +269,7 @@ public class QuickGameSetupFragment extends Fragment implements GameServiceHandl
         colorSelectionDialog.show();
     }
 
-    private void teamColorSelected(TeamType teamType, int colorId) {
+    private void teamColorSelected (TeamType teamType, int colorId) {
         Log.i(Tags.SETUP_UI, String.format("Update %s team color", teamType));
         final MaterialButton colorButton;
         final MaterialButton namesButton;
@@ -274,7 +288,7 @@ public class QuickGameSetupFragment extends Fragment implements GameServiceHandl
         updateCaptain(teamType);
     }
 
-    private void updateGender(GenderType genderType) {
+    private void updateGender (GenderType genderType) {
         Context context = getContext();
         mGame.setGender(genderType);
         switch (genderType) {
@@ -290,12 +304,12 @@ public class QuickGameSetupFragment extends Fragment implements GameServiceHandl
         }
     }
 
-    private void updateCaptain(TeamType teamType) {
+    private void updateCaptain (TeamType teamType) {
         int captain = mGame.getCaptain(teamType);
         captainUpdated(teamType, captain);
     }
 
-    private void captainUpdated(TeamType teamType, int number) {
+    private void captainUpdated (TeamType teamType, int number) {
         Log.i(Tags.SETUP_UI, String.format("Update %s team captain", teamType));
         mGame.setCaptain(teamType, number);
 
@@ -311,7 +325,7 @@ public class QuickGameSetupFragment extends Fragment implements GameServiceHandl
         UiUtils.styleTeamButton(getContext(), mGame, teamType, number, button);
     }
 
-    private void switchCaptain(TeamType teamType) {
+    private void switchCaptain (TeamType teamType) {
         int captain = mGame.getCaptain(teamType);
 
         switch (captain) {
@@ -328,13 +342,13 @@ public class QuickGameSetupFragment extends Fragment implements GameServiceHandl
         captainUpdated(teamType, captain);
     }
 
-    private void computeConfirmItemVisibility() {
+    private void computeConfirmItemVisibility () {
         if (getActivity() instanceof QuickGameSetupActivity) {
             ((QuickGameSetupActivity) getActivity()).computeStartLayoutVisibility();
         }
     }
 
-    private void showPlayerNamesInputDialogFragment(TeamType teamType) {
+    private void showPlayerNamesInputDialogFragment (TeamType teamType) {
         PlayerNamesInputDialogFragment fragment = PlayerNamesInputDialogFragment.newInstance(teamType);
         fragment.show(getChildFragmentManager(), "player_names_input_dialog");
         fragment.setTeam(mGame);

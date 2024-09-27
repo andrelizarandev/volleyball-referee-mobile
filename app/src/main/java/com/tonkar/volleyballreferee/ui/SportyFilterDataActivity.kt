@@ -115,57 +115,44 @@ class SportyFilterDataActivity : AppCompatActivity() {
 
         val token = vbrRepository.sportyTokenList
 
-        val obj = ApiSportyPostRequestFilterGames(token[0].token, selectedCourt.cve, selectedDate, selectedState.cve);
+        val obj = ApiSportyPostRequestFilterGames(
+            token[0].token,
+            selectedCourt.cve,
+            selectedDate,
+            selectedState.cve
+        )
+
+        println(obj.toString())
 
         VbrApi.getInstance().postSportyFilters(obj, this, object : Callback {
-
             override fun onFailure (call: Call, e: IOException) {
                 call.cancel()
             }
-
             override fun onResponse (call: Call, response: Response) {
-
-                if (response.code != HttpURLConnection.HTTP_OK) {
-
-                    call.cancel()
-
-                } else {
-
+                if (response.code != HttpURLConnection.HTTP_OK) call.cancel()
+                else {
                     // Can only be used once
                     val response = response.body!!.string()
-
                     val resp = Gson().fromJson(response, ApiSportyPostResponseFilterGames::class.java)
-
                     val juegos = resp.juegos
-
                     if (juegos != null) {
-
                         vbrRepository.deleteAllSportyGames()
-
                         for (game in juegos) {
                             val parsedContent = Gson().toJson(game)
                             val entity = SportyGameEntity(game.cve, parsedContent, 0)
+                            println("Inserting game: ${game.confiGame.actionvr}")
                             vbrRepository.insertSportyGame(entity)
                         }
-
                         val intent = Intent(this@SportyFilterDataActivity, ListSportyGamesActivity::class.java)
-
                         startActivity(intent)
-
                     } else {
-
                         runOnUiThread {
-
                             UiUtils.makeText(this@SportyFilterDataActivity, getString(R.string.sporty_no_games_found), Toast.LENGTH_LONG).show()
-                            
                         }
-
                     }
-
                 }
-
             }
         })
-
     }
+
 }

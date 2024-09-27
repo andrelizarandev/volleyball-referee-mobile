@@ -40,6 +40,7 @@ import com.tonkar.volleyballreferee.ui.util.UiUtils;
 public class QuickGameSetupActivity extends AppCompatActivity {
 
     private IGame mGame;
+    private int selectedSportyGame;
 
     public QuickGameSetupActivity() {
         super();
@@ -56,7 +57,7 @@ public class QuickGameSetupActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate (Bundle savedInstanceState) {
         StoredGamesService storedGamesService = new StoredGamesManager(this);
         mGame = storedGamesService.loadSetupGame();
 
@@ -70,9 +71,7 @@ public class QuickGameSetupActivity extends AppCompatActivity {
         UiUtils.updateToolbarLogo(toolbar, mGame.getKind(), mGame.getUsage());
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
 
         final boolean create = getIntent().getBooleanExtra("create", true);
         final BottomNavigationView gameSetupNavigation = findViewById(R.id.quick_game_setup_nav);
@@ -119,7 +118,7 @@ public class QuickGameSetupActivity extends AppCompatActivity {
         }
     }
 
-    public void startGame(View view) {
+    public void startGame (View view) {
         Log.i(Tags.SETUP_UI, "Start game");
         mGame.startMatch();
         StoredGamesService storedGamesService = new StoredGamesManager(this);
@@ -174,7 +173,6 @@ public class QuickGameSetupActivity extends AppCompatActivity {
 
     private void cancelSetup() {
         Log.i(Tags.SETUP_UI, "Cancel setup");
-
         final AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppTheme_Dialog);
         builder.setTitle(getString(R.string.game_setup_title)).setMessage(getString(R.string.leave_game_setup_question));
         builder.setPositiveButton(android.R.string.yes, (dialog, which) -> {
@@ -190,32 +188,31 @@ public class QuickGameSetupActivity extends AppCompatActivity {
         UiUtils.setAlertDialogMessageSize(alertDialog, getResources());
     }
 
-    private void initGameSetupNavigation(final BottomNavigationView gameSetupNavigation, Bundle savedInstanceState, boolean create) {
+    private void initGameSetupNavigation (final BottomNavigationView gameSetupNavigation, Bundle savedInstanceState, boolean create) {
+
+        selectedSportyGame = getIntent().getIntExtra("sporty_game_position", -1);
+
         gameSetupNavigation.setOnItemSelectedListener(item -> {
-                    final Fragment fragment;
-
-                    int itemId = item.getItemId();
-                    if (itemId == R.id.teams_tab) {
-                        fragment = QuickGameSetupFragment.newInstance(create);
-                    } else if (itemId == R.id.rules_tab) {
-                        if (GameType.TIME.equals(mGame.getKind())) {
-                            fragment = null;
-                        } else {
-                            fragment = RulesSetupFragment.newInstance(true, -1);
-                        }
-                    } else if (itemId == R.id.misc_tab) {
-                        fragment = MiscSetupFragment.newInstance();
-                    } else {
-                        fragment = null;
-                    }
-
-                    final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    UiUtils.animateNavigationView(transaction);
-                    transaction.replace(R.id.quick_game_setup_container, fragment).commit();
-
-                    return true;
+            final Fragment fragment;
+            int itemId = item.getItemId();
+            if (itemId == R.id.teams_tab) {
+                fragment = QuickGameSetupFragment.newInstance(create, selectedSportyGame);
+            } else if (itemId == R.id.rules_tab) {
+                if (GameType.TIME.equals(mGame.getKind())) {
+                    fragment = null;
+                } else {
+                    fragment = RulesSetupFragment.newInstance(true, selectedSportyGame);
                 }
-        );
+            } else if (itemId == R.id.misc_tab) {
+                fragment = MiscSetupFragment.newInstance();
+            } else {
+                fragment = null;
+            }
+            final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            UiUtils.animateNavigationView(transaction);
+            transaction.replace(R.id.quick_game_setup_container, fragment).commit();
+            return true;
+        });
 
         if (savedInstanceState == null) {
             gameSetupNavigation.setSelectedItemId(R.id.teams_tab);
@@ -224,5 +221,6 @@ public class QuickGameSetupActivity extends AppCompatActivity {
         if (GameType.TIME.equals(mGame.getKind())) {
             gameSetupNavigation.setVisibility(View.GONE);
         }
+
     }
 }

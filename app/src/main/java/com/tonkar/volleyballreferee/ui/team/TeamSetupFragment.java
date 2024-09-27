@@ -129,7 +129,7 @@ public class TeamSetupFragment extends Fragment implements BaseTeamServiceHandle
     }
 
     // Other
-    public static TeamSetupFragment newInstance(GameType gameType, TeamType teamType, boolean isGameContext, int selectedSportyGameIndex) {
+    public static TeamSetupFragment newInstance (GameType gameType, TeamType teamType, boolean isGameContext, int selectedSportyGameIndex) {
         TeamSetupFragment fragment = new TeamSetupFragment();
         Bundle args = new Bundle();
         args.putString(GameType.class.getName(), gameType.toString());
@@ -141,13 +141,12 @@ public class TeamSetupFragment extends Fragment implements BaseTeamServiceHandle
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView (@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Sporty
         int selectedSportyGameIndex = getArguments().getInt("sporty_game_position");
 
         if (selectedSportyGameIndex != -1) {
-            Log.e(Tags.SETUP_UI, "No game selected");
             ApiSportyPostResponseFilterGames.JuegosData game = getSportyGameWithIndex(selectedSportyGameIndex);
             setTeamNames(game);
             setSportyPlayersList(game);
