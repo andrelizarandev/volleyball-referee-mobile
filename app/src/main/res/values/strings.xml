@@ -529,5 +529,6 @@
     <string name="sporty_send_no_synced_games">Send no synchronized games</string>
     <string name="sporty_games_synced">Games synced</string>
     <string name="sporty_no_games_found">No games found</string>
+    <string name="sporty_already_played_game">Already played game</string>
 
 </resources>

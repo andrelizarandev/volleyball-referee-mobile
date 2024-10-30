@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import com.tonkar.volleyballreferee.R;
 
@@ -27,6 +29,7 @@ import com.tonkar.volleyballreferee.engine.service.StoredGamesManager;
 import com.tonkar.volleyballreferee.engine.service.StoredGamesService;
 import com.tonkar.volleyballreferee.ui.setup.GameSetupActivity;
 import com.tonkar.volleyballreferee.ui.setup.QuickGameSetupActivity;
+import com.tonkar.volleyballreferee.ui.util.UiUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -61,19 +64,28 @@ public class SportyGameListAdapter extends RecyclerView.Adapter<SportyGameHolder
     }
 
     public void onBindViewHolder (SportyGameHolder holder, int position) {
+
         List<ApiSportyValidateCode.EstadoData> stateList = vbrRepository.listStates();
         ApiSportyPostResponseFilterGames.JuegosData game = listGames.get(position);
         holder.bind(game, stateList);
+
         ActionVR currentGameType = game.confiGame.actionvr;
-        if (Objects.equals(game.estado, "1")) {
+        boolean isGamePlayed = game.estado.equals("1");
+
+        System.out.println(currentGameType);
+
+        if (isGamePlayed) {
             holder.itemView.setClickable(false);
             holder.itemView.setFocusable(false);
         }
-        else holder.itemView.setOnClickListener(v -> {
-            if (currentGameType == ActionVR.vol) startIndoorGame(position);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (isGamePlayed) UiUtils.makeText(context, context.getString(R.string.sporty_already_played_game), Toast.LENGTH_LONG).show();
+            else if (currentGameType == ActionVR.vol) startIndoorGame(position);
             else if (currentGameType == ActionVR.sb) startScoreboardGame(position);
             else if (currentGameType == ActionVR.vol_play) startBeachGame(position);
         });
+
     }
 
     public void startIndoorGame (int position) {

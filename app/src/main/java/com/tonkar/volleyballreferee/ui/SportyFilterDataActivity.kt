@@ -122,8 +122,6 @@ class SportyFilterDataActivity : AppCompatActivity() {
             selectedState.cve
         )
 
-        println(obj.toString())
-
         VbrApi.getInstance().postSportyFilters(obj, this, object : Callback {
             override fun onFailure (call: Call, e: IOException) {
                 call.cancel()
@@ -140,7 +138,6 @@ class SportyFilterDataActivity : AppCompatActivity() {
                         for (game in juegos) {
                             val parsedContent = Gson().toJson(game)
                             val entity = SportyGameEntity(game.cve, parsedContent, 0)
-                            println("Inserting game: ${game.confiGame.actionvr}")
                             vbrRepository.insertSportyGame(entity)
                         }
                         val intent = Intent(this@SportyFilterDataActivity, ListSportyGamesActivity::class.java)
