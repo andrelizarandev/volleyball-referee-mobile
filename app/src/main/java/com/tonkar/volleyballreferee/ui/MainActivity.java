@@ -453,7 +453,7 @@ public class MainActivity extends NavigationActivity {
         etSportyCode = customDialog.findViewById(R.id.sporty_et_code);
         btnSportyValidateCode = customDialog.findViewById(R.id.sporty_btn_code);
 
-        etSportyCode.setText("03a3dc9120cb3a3e");
+        etSportyCode.setText("b277eec744ff869f");
 
         // Listeners
         btnSportyValidateCode.setOnClickListener(v -> {

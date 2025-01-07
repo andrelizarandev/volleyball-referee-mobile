@@ -251,28 +251,5 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
         });
     }
 
-    private void cleanCurrentRunningGame() {
-        vbrRepository.setAllAsNotRunningSportyGame();
-    }
-
-    static class SportyResume {
-
-        private ApiGameSummary generalData;
-        private Set<ApiPlayer> homePlayerList;
-        private Set<ApiPlayer> guestPlayerList;
-        private int homeSets;
-        private int guestSets;
-
-        public SportyResume (ApiGameSummary generalData, Set<ApiPlayer> homePlayerList, Set<ApiPlayer> guestPlayerList, int homeSets, int guestSets) {
-            this.generalData = generalData;
-            this.homePlayerList = homePlayerList;
-            this.guestPlayerList = guestPlayerList;
-            this.homeSets = homeSets;
-            this.guestSets = guestSets;
-        }
-
-
-    }
-
 }
 

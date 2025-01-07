@@ -80,6 +80,7 @@ public class SportyGameListAdapter extends RecyclerView.Adapter<SportyGameHolder
         }
 
         holder.itemView.setOnClickListener(v -> {
+            System.out.println(currentGameType);
             if (isGamePlayed) UiUtils.makeText(context, context.getString(R.string.sporty_already_played_game), Toast.LENGTH_LONG).show();
             else if (currentGameType == ActionVR.vol) startIndoorGame(position);
             else if (currentGameType == ActionVR.sb) startScoreboardGame(position);

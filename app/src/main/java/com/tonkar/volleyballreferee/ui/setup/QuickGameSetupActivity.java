@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ScrollView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,11 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.tonkar.volleyballreferee.R;
 import com.tonkar.volleyballreferee.engine.PrefUtils;
 import com.tonkar.volleyballreferee.engine.Tags;
+import com.tonkar.volleyballreferee.engine.api.VbrApi;
+import com.tonkar.volleyballreferee.engine.api.model.ApiSportyPostResponseFilterGames;
+import com.tonkar.volleyballreferee.engine.api.model.ApiSportyUpdateGame;
+import com.tonkar.volleyballreferee.engine.database.VbrRepository;
+import com.tonkar.volleyballreferee.engine.database.model.SportyTokenEntity;
 import com.tonkar.volleyballreferee.engine.game.GameType;
 import com.tonkar.volleyballreferee.engine.game.IGame;
 import com.tonkar.volleyballreferee.engine.service.StoredGamesManager;
@@ -37,10 +43,18 @@ import com.tonkar.volleyballreferee.ui.interfaces.RulesHandler;
 import com.tonkar.volleyballreferee.ui.rules.RulesSetupFragment;
 import com.tonkar.volleyballreferee.ui.util.UiUtils;
 
+import java.io.IOException;
+import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 public class QuickGameSetupActivity extends AppCompatActivity {
 
     private IGame mGame;
     private int selectedSportyGame;
+    private final VbrRepository vbrRepository = new VbrRepository(this);
 
     public QuickGameSetupActivity() {
         super();
@@ -119,10 +133,16 @@ public class QuickGameSetupActivity extends AppCompatActivity {
     }
 
     public void startGame (View view) {
+
         Log.i(Tags.SETUP_UI, "Start game");
         mGame.startMatch();
         StoredGamesService storedGamesService = new StoredGamesManager(this);
         storedGamesService.createCurrentGame(mGame);
+
+        if (selectedSportyGame != -1) {
+            startSportyGame();
+            setGameAsRunning();
+        }
 
         if (GameType.TIME.equals(mGame.getKind())) {
             Log.i(Tags.SETUP_UI, "Start time-based game activity");
@@ -146,6 +166,7 @@ public class QuickGameSetupActivity extends AppCompatActivity {
             startActivity(gameIntent);
             UiUtils.animateCreate(this);
         }
+
     }
 
     private void saveTeams() {
@@ -223,4 +244,28 @@ public class QuickGameSetupActivity extends AppCompatActivity {
         }
 
     }
+
+    private void startSportyGame () {
+        List<SportyTokenEntity> sportyTokenList = vbrRepository.getSportyTokenList();
+        ApiSportyPostResponseFilterGames.JuegosData game = vbrRepository.getSportyGameByIndex(selectedSportyGame);
+        Log.i("GAME_SETUP", "Starting sporty game with cve: " + game.cve);
+        if (!sportyTokenList.isEmpty()) {
+            String token = sportyTokenList.get(0).getToken();
+            ApiSportyUpdateGame payload = new ApiSportyUpdateGame(game.cve, null, null, token);
+            VbrApi.getInstance().postStartSportyGame(payload, this, new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    call.cancel();
+                }
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) {}
+            });
+        }
+    }
+
+    private void setGameAsRunning () {
+        ApiSportyPostResponseFilterGames.JuegosData game = vbrRepository.getSportyGameByIndex(selectedSportyGame);
+        vbrRepository.setAsRunningSportyGame(game.cve);
+    }
+
 }
