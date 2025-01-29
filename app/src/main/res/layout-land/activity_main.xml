@@ -9,7 +9,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="top|center"
         android:orientation="vertical">
 
         <include layout="@layout/toolbar" />
@@ -21,52 +20,87 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:baselineAligned="false"
-                android:gravity="top|center"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:baselineAligned="false"
                     android:gravity="top|center"
-                    android:orientation="vertical">
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
-                    <include layout="@layout/main_sign_in_tile" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="top|center"
+                        android:orientation="vertical">
 
-                    <include layout="@layout/main_colleagues_tile" />
+                        <include layout="@layout/main_sign_in_tile" />
 
-                    <include layout="@layout/main_available_games_tile" />
+                        <include layout="@layout/main_colleagues_tile" />
 
-                    <include layout="@layout/main_resume_game_tile" />
+                        <include layout="@layout/main_available_games_tile" />
 
-                    <include layout="@layout/main_indoor_6x6_tile" />
+                        <include layout="@layout/main_resume_game_tile" />
 
-                    <include layout="@layout/main_snow_tile" />
+                        <include layout="@layout/main_indoor_6x6_tile" />
 
-                    <include layout="@layout/main_indoor_4x4_tile" />
+                        <include layout="@layout/main_snow_tile" />
+
+                        <include layout="@layout/main_indoor_4x4_tile" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="top|center"
+                        android:orientation="vertical">
+
+                        <include layout="@layout/main_beach_tile" />
+
+                        <include layout="@layout/main_scoreboard_tile" />
+
+                        <include layout="@layout/main_time_based_tile" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="top|center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="@dimen/default_margin_size">
 
-                    <include layout="@layout/main_beach_tile" />
+                    <Button
+                        android:id="@+id/main_btn_open_validate_sporty_code_dialog"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sporty_enter_code" />
 
-                    <include layout="@layout/main_scoreboard_tile" />
+                    <Button
+                        android:id="@+id/main_btn_filter_games"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sporty_filter_games" />
 
-                    <include layout="@layout/main_time_based_tile" />
+                    <Button
+                        android:id="@+id/main_btn_sporty_sign_out"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sporty_sign_out" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
         </ScrollView>
+
+
 
     </LinearLayout>
 
