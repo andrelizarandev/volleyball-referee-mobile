@@ -191,6 +191,7 @@ public class RulesSetupFragment extends Fragment implements RulesHandler {
 
         mSetsPerGameSpinner.setSelection(setsToWin);
         mPointsPerSetSpinner.setSelection(pointsToWin);
+        //Se agregaron
         mTwoPointsDifferenceSwitch.setChecked(twoPointsDifference);
         mPointsInTieBreakSpinner.setSelection(pointsToWinBreak);
 
