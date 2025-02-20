@@ -125,6 +125,9 @@ public class TeamSetupFragment extends Fragment implements BaseTeamServiceHandle
     public void setRules (ApiSportyPostResponseFilterGames.JuegosData parsedGame) {
         String sets = parsedGame.confiGame.cntSets;
         int points = parsedGame.confiGame.pntSet;
+        Boolean tieBreakInLastSet = parsedGame.confiGame.tieBreakInLastSet;
+        int pointsInTieBreak = parsedGame.confiGame.pointsInTieBreak;
+        Boolean twoPointsDifference = parsedGame.confiGame.twoPointsDifference;
         Log.i("TEAM_SETUP", "Sets: " + sets + " Points: " + points);
     }
 

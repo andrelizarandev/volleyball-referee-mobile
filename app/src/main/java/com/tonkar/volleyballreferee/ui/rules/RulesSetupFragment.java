@@ -102,6 +102,9 @@ public class RulesSetupFragment extends Fragment implements RulesHandler {
         ApiSportyPostResponseFilterGames.JuegosData selectedGame = mVbrRepository.getSportyGameByIndex(sportyGameIndex);
         String sets = selectedGame.confiGame.cntSets;
         int points = selectedGame.confiGame.pntSet;
+        Boolean tieBreakInLastSet = selectedGame.confiGame.tieBreakInLastSet;
+        int pointsInTieBreak = selectedGame.confiGame.pointsInTieBreak;
+        Boolean twoPointsDifference = selectedGame.confiGame.twoPointsDifference;
 
         Log.i("RULES_SETUP", "sets: " + sets + " points: " + points);
 
@@ -150,8 +153,46 @@ public class RulesSetupFragment extends Fragment implements RulesHandler {
             default -> 1;
         };
 
+        int pointsToWinBreak = switch (pointsInTieBreak) {
+            case 40 -> 0;
+            case 39 -> 1;
+            case 38 -> 2;
+            case 37 -> 3;
+            case 36 -> 4;
+            case 35 -> 5;
+            case 34 -> 6;
+            case 33 -> 7;
+            case 32 -> 8;
+            case 31 -> 9;
+            case 30 -> 10;
+            case 29 -> 11;
+            case 28 -> 12;
+            case 27 -> 13;
+            case 26 -> 14;
+            case 25 -> 15;
+            case 24 -> 16;
+            case 23 -> 17;
+            case 22 -> 18;
+            case 21 -> 19;
+            case 20 -> 20;
+            case 19 -> 21;
+            case 18 -> 22;
+            case 17 -> 23;
+            case 16 -> 24;
+            case 15 -> 25;
+            case 14 -> 26;
+            case 13 -> 27;
+            case 12 -> 28;
+            case 11 -> 29;
+            case 10 -> 30;
+            case 9 -> 31;
+            default -> 1;
+        };
+
         mSetsPerGameSpinner.setSelection(setsToWin);
         mPointsPerSetSpinner.setSelection(pointsToWin);
+        mTwoPointsDifferenceSwitch.setChecked(twoPointsDifference);
+        mPointsInTieBreakSpinner.setSelection(pointsToWinBreak);
 
     }
 

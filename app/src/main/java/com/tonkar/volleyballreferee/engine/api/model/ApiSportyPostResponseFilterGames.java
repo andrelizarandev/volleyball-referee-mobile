@@ -42,6 +42,9 @@ public class ApiSportyPostResponseFilterGames {
         public String cntSets;
         public int pntSet;
         public ActionVR actionvr;
+        public Boolean tieBreakInLastSet;
+        public int pointsInTieBreak;
+        public Boolean twoPointsDifference;
     }
 
     public static class JugadorData {
