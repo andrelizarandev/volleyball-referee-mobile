@@ -242,7 +242,7 @@ public class StoredTeamsListActivity extends NavigationActivity implements DataS
         if(mIsFabOpen) {
             closeFABMenu();
         } else if(mStoredTeamsListAdapter.hasSelectedItems()){
-            mStoredTeamsListAdapter.clearSelectedItems();
+            mStoredTeamsListAdapter.cleanSelectedItems();
         } else {
             super.onBackPressed();
         }

@@ -237,7 +237,7 @@ public class StoredRulesListActivity extends NavigationActivity implements DataS
         if(mIsFabOpen) {
             closeFABMenu();
         } else if(mStoredRulesListAdapter.hasSelectedItems()){
-            mStoredRulesListAdapter.clearSelectedItems();
+            mStoredRulesListAdapter.cleanSelectedItems();
         } else {
             super.onBackPressed();
         }

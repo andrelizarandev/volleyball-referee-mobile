@@ -88,7 +88,7 @@ public class RulesSetupFragment extends Fragment implements RulesHandler {
         return newInstance(true, -1);
     }
 
-    public static RulesSetupFragment newInstance(boolean isGameContext, int selectedSportyGame) {
+    public static RulesSetupFragment newInstance (boolean isGameContext, int selectedSportyGame) {
         RulesSetupFragment fragment = new RulesSetupFragment();
         Bundle args = new Bundle();
         args.putBoolean("is_game", isGameContext);
@@ -100,11 +100,11 @@ public class RulesSetupFragment extends Fragment implements RulesHandler {
     public void getSportyRules () {
 
         ApiSportyPostResponseFilterGames.JuegosData selectedGame = mVbrRepository.getSportyGameByIndex(sportyGameIndex);
-        String sets = selectedGame.confiGame.cntSets;
+
         int points = selectedGame.confiGame.pntSet;
-        Boolean tieBreakInLastSet = selectedGame.confiGame.tieBreakInLastSet;
         int pointsInTieBreak = selectedGame.confiGame.pointsInTieBreak;
-        Boolean twoPointsDifference = selectedGame.confiGame.twoPointsDifference;
+        String sets = (selectedGame.confiGame.cntSets == null) ? "3" : selectedGame.confiGame.cntSets;
+        boolean twoPointsDifference = (selectedGame.confiGame.twoPointsDifference == null) ? false : selectedGame.confiGame.twoPointsDifference;
 
         Log.i("RULES_SETUP", "sets: " + sets + " points: " + points);
 

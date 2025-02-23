@@ -49,7 +49,7 @@ public class StoredRulesListAdapter extends SelectableArrayAdapter<ApiRulesSumma
         mFilteredStoredRulesList.clear();
         mStoredRulesList.addAll(storedRulesList);
         mFilteredStoredRulesList.addAll(storedRulesList);
-        clearSelectedItems();
+        cleanSelectedItems();
     }
 
     @Override

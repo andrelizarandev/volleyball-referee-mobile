@@ -50,7 +50,7 @@ public class StoredTeamsListAdapter extends SelectableArrayAdapter<ApiTeamSummar
         mFilteredStoredTeamsList.clear();
         mStoredTeamsList.addAll(storedTeamsList);
         mFilteredStoredTeamsList.addAll(storedTeamsList);
-        clearSelectedItems();
+        cleanSelectedItems();
     }
 
     @Override

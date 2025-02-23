@@ -273,7 +273,7 @@ public class GameSetupActivity extends AppCompatActivity {
             return true;
         });
         if (savedInstanceState == null) {
-            gameSetupNavigation.setSelectedItemId(R.id.home_team_tab);
+            gameSetupNavigation.setSelectedItemId(R.id.rules_tab);
         }
     }
 

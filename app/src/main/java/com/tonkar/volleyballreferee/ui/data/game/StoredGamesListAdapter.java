@@ -47,7 +47,7 @@ public class StoredGamesListAdapter extends SelectableArrayAdapter<ApiGameSummar
     private final NamesFilter          mNamesFilter;
     private final boolean              mIsSyncOn;
 
-    StoredGamesListAdapter(Context context, LayoutInflater layoutInflater, List<ApiGameSummary> storedGamesList) {
+    StoredGamesListAdapter (Context context, LayoutInflater layoutInflater, List<ApiGameSummary> storedGamesList) {
         super(context, R.layout.stored_games_list_item, storedGamesList);
         mLayoutInflater = layoutInflater;
         mStoredGamesList = storedGamesList;
@@ -59,12 +59,16 @@ public class StoredGamesListAdapter extends SelectableArrayAdapter<ApiGameSummar
         mIsSyncOn = PrefUtils.canSync(context);
     }
 
-    void updateStoredGamesList(List<ApiGameSummary> storedGamesList) {
+    void updateStoredGamesList (List<ApiGameSummary> storedGamesList) {
         mStoredGamesList.clear();
         mFilteredStoredGamesList.clear();
         mStoredGamesList.addAll(storedGamesList);
         mFilteredStoredGamesList.addAll(storedGamesList);
-        clearSelectedItems();
+        cleanSelectedItems();
+    }
+
+    void cleanPlayedGames () {
+
     }
 
     @Override

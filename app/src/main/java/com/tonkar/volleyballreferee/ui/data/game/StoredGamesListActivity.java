@@ -10,40 +10,26 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.gson.Gson;
 import com.tonkar.volleyballreferee.R;
 import com.tonkar.volleyballreferee.engine.PrefUtils;
 import com.tonkar.volleyballreferee.engine.Tags;
-import com.tonkar.volleyballreferee.engine.api.VbrApi;
 import com.tonkar.volleyballreferee.engine.api.model.ApiGameSummary;
-import com.tonkar.volleyballreferee.engine.api.model.ApiPlayer;
-import com.tonkar.volleyballreferee.engine.api.model.ApiSportyUpdateGame;
 import com.tonkar.volleyballreferee.engine.database.VbrRepository;
-import com.tonkar.volleyballreferee.engine.database.model.SportyGameEntity;
 import com.tonkar.volleyballreferee.engine.game.GameType;
 import com.tonkar.volleyballreferee.engine.game.UsageType;
 import com.tonkar.volleyballreferee.engine.service.DataSynchronizationListener;
 import com.tonkar.volleyballreferee.engine.service.IStoredGame;
 import com.tonkar.volleyballreferee.engine.service.StoredGamesManager;
 import com.tonkar.volleyballreferee.engine.service.StoredGamesService;
-import com.tonkar.volleyballreferee.engine.team.TeamType;
 import com.tonkar.volleyballreferee.ui.NavigationActivity;
 import com.tonkar.volleyballreferee.ui.util.UiUtils;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.List;
-import java.util.Set;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 public class StoredGamesListActivity extends NavigationActivity  implements DataSynchronizationListener {
 
@@ -51,8 +37,8 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
     private StoredGamesListAdapter mStoredGamesListAdapter;
     private SwipeRefreshLayout     mSyncLayout;
     private MenuItem               mDeleteSelectedGamesItem;
-    private VbrRepository          vbrRepository;
     private Button                 sendNoSynchronizedGamesButton;
+    private Button                 cleanSynchronizedGamesButton;
 
     @Override
     protected String getToolbarTitle() {
@@ -75,9 +61,9 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
 
         mSyncLayout = findViewById(R.id.stored_games_sync_layout);
         mSyncLayout.setOnRefreshListener(this::updateStoredGamesList);
+        cleanSynchronizedGamesButton = findViewById(R.id.clean_synchronized_games_button);
         sendNoSynchronizedGamesButton = findViewById(R.id.sporty_send_no_synchronized_games_button);
 
-        vbrRepository = new VbrRepository(this);
         mStoredGamesService = new StoredGamesManager(this);
 
         List<ApiGameSummary> games = mStoredGamesService.listGames();
@@ -116,7 +102,6 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
             }
         });
 
-
         storedGamesList.setOnItemLongClickListener((parent, view, position, id) -> {
             ApiGameSummary game = mStoredGamesListAdapter.getItem(position);
             mStoredGamesListAdapter.toggleItemSelection(game.getId());
@@ -125,6 +110,7 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
         });
 
         sendNoSynchronizedGamesButton.setOnClickListener(v -> sendNoSynchronizedGames());
+        cleanSynchronizedGamesButton.setOnClickListener(v -> cleanSynchronizedGames());
 
         sendNoSynchronizedGames();
 
@@ -132,7 +118,7 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
 
     }
 
-    private void sendNoSynchronizedGames() {
+    private void sendNoSynchronizedGames () {
         List<ApiGameSummary> games = mStoredGamesService.listGames();
         for (ApiGameSummary game : games) {
             if (!game.isSynced() && !game.getCve().equals("null")) {
@@ -143,6 +129,10 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
                 }));
             }
         }
+    }
+
+    private void cleanSynchronizedGames () {
+        mStoredGamesListAdapter.cleanPlayedGames();
     }
 
     private void updateAdapter () {
@@ -206,7 +196,7 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
     @Override
     public void onBackPressed() {
         if(mStoredGamesListAdapter.hasSelectedItems()){
-            mStoredGamesListAdapter.clearSelectedItems();
+            mStoredGamesListAdapter.cleanSelectedItems();
         } else {
             super.onBackPressed();
         }
@@ -252,4 +242,3 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
     }
 
 }
-

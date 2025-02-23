@@ -391,5 +391,6 @@
     <string name="sporty_games_synced">-</string>
     <string name="sporty_no_games_found">-</string>
     <string name="sporty_already_played_game">-</string>
+    <string name="sporty_clean_synchronized_games">-</string>
 
 </resources>

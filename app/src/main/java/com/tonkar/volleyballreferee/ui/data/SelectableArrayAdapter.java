@@ -36,7 +36,7 @@ public abstract class SelectableArrayAdapter<T> extends ArrayAdapter<T> {
         return mSelectedItems.size() > 0;
     }
 
-    public void clearSelectedItems() {
+    public void cleanSelectedItems() {
         mSelectedItems.clear();
         notifyDataSetChanged();
     }

@@ -530,5 +530,6 @@
     <string name="sporty_games_synced">Games synced</string>
     <string name="sporty_no_games_found">No games found</string>
     <string name="sporty_already_played_game">Already played game</string>
+    <string name="sporty_clean_synchronized_games">Clean synchronized games</string>
 
 </resources>

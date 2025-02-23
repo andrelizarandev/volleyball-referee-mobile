@@ -169,7 +169,7 @@ public class QuickGameSetupActivity extends AppCompatActivity {
 
     }
 
-    private void saveTeams() {
+    private void saveTeams () {
         if (mGame.getCreatedBy().equals(PrefUtils.getUser(this).getId())) {
             StoredTeamsService storedTeamsService = new StoredTeamsManager(this);
             GameType gameType = mGame.getTeamsKind();
@@ -178,14 +178,14 @@ public class QuickGameSetupActivity extends AppCompatActivity {
         }
     }
 
-    private void saveRules() {
+    private void saveRules () {
         if (mGame.getCreatedBy().equals(PrefUtils.getUser(this).getId())) {
             StoredRulesService storedRulesService = new StoredRulesManager(this);
             storedRulesService.createAndSaveRulesFrom(mGame.getRules());
         }
     }
 
-    private void saveLeague() {
+    private void saveLeague () {
         if (mGame.getCreatedBy().equals(PrefUtils.getUser(this).getId())) {
             StoredLeaguesService storedLeaguesService = new StoredLeaguesManager(this);
             storedLeaguesService.createAndSaveLeagueFrom(mGame.getLeague());
@@ -214,29 +214,46 @@ public class QuickGameSetupActivity extends AppCompatActivity {
         selectedSportyGame = getIntent().getIntExtra("sporty_game_position", -1);
 
         gameSetupNavigation.setOnItemSelectedListener(item -> {
+
             final Fragment fragment;
+
             int itemId = item.getItemId();
+
             if (itemId == R.id.teams_tab) {
+
                 fragment = QuickGameSetupFragment.newInstance(create, selectedSportyGame);
+
             } else if (itemId == R.id.rules_tab) {
+
                 if (GameType.TIME.equals(mGame.getKind())) {
+
                     fragment = null;
+
                 } else {
+
                     fragment = RulesSetupFragment.newInstance(true, selectedSportyGame);
+
                 }
+
             } else if (itemId == R.id.misc_tab) {
+
                 fragment = MiscSetupFragment.newInstance();
+
             } else {
+
                 fragment = null;
+
             }
+
             final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             UiUtils.animateNavigationView(transaction);
             transaction.replace(R.id.quick_game_setup_container, fragment).commit();
             return true;
+
         });
 
         if (savedInstanceState == null) {
-            gameSetupNavigation.setSelectedItemId(R.id.teams_tab);
+            gameSetupNavigation.setSelectedItemId(R.id.rules_tab);
         }
 
         if (GameType.TIME.equals(mGame.getKind())) {
