@@ -29,6 +29,7 @@ import com.tonkar.volleyballreferee.engine.service.StoredGamesService;
 import com.tonkar.volleyballreferee.ui.NavigationActivity;
 import com.tonkar.volleyballreferee.ui.util.UiUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StoredGamesListActivity extends NavigationActivity  implements DataSynchronizationListener {
@@ -132,7 +133,15 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
     }
 
     private void cleanSynchronizedGames () {
-        mStoredGamesListAdapter.cleanPlayedGames();
+
+        List<ApiGameSummary> games = mStoredGamesService.listGames();
+
+        for (ApiGameSummary game : games) {
+            if (game.isSynced()) { mStoredGamesService.deleteGame(game.getId()); }
+        }
+
+        updateAdapter();
+
     }
 
     private void updateAdapter () {
@@ -146,7 +155,7 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu (Menu menu) {
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_stored_games, menu);
@@ -179,7 +188,7 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected (MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.action_search_games) {
             return true;
@@ -194,7 +203,7 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed () {
         if(mStoredGamesListAdapter.hasSelectedItems()){
             mStoredGamesListAdapter.cleanSelectedItems();
         } else {
@@ -202,7 +211,7 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
         }
     }
 
-    private void deleteSelectedGames() {
+    private void deleteSelectedGames () {
         Log.i(Tags.STORED_GAMES, "Delete selected games");
         final AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppTheme_Dialog);
         builder.setTitle(getString(R.string.delete_selected_games)).setMessage(getString(R.string.delete_selected_games_question));
@@ -215,7 +224,7 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
         UiUtils.setAlertDialogMessageSize(alertDialog, getResources());
     }
 
-    private void updateStoredGamesList() {
+    private void updateStoredGamesList () {
         if (PrefUtils.canSync(this)) {
             mSyncLayout.setRefreshing(true);
             mStoredGamesService.syncGames(this);
@@ -223,7 +232,7 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
     }
 
     @Override
-    public void onSynchronizationSucceeded() {
+    public void onSynchronizationSucceeded () {
         runOnUiThread(() -> {
             mStoredGamesListAdapter.updateStoredGamesList(mStoredGamesService.listGames());
             if (mDeleteSelectedGamesItem != null) {
@@ -234,7 +243,7 @@ public class StoredGamesListActivity extends NavigationActivity  implements Data
     }
 
     @Override
-    public void onSynchronizationFailed() {
+    public void onSynchronizationFailed () {
         runOnUiThread(() -> {
             UiUtils.makeErrorText(this, getString(R.string.sync_failed_message), Toast.LENGTH_LONG).show();
             mSyncLayout.setRefreshing(false);
